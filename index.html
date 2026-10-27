@@ -7,14 +7,24 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Expenses">
 <meta name="theme-color" content="#000000">
-<title>Expenses v0.2</title>
+<title>Expenses v0.3</title>
 <style>
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
 }
 html {
-  background: #000;
+  background: #050507;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(120,20,45,.25), transparent 40%),
+    radial-gradient(circle at 80% 60%, rgba(40,60,120,.18), transparent 45%),
+    #050507;
 }
 body {
   font-family: -apple-system, Helvetica, Arial, sans-serif;
@@ -24,11 +34,6 @@ body {
   padding-bottom: calc(24px + env(safe-area-inset-bottom));
   min-height: 100vh;
   color: #fff;
-  background:
-    radial-gradient(circle at 20% 10%, rgba(120,20,45,.25), transparent 40%),
-    radial-gradient(circle at 80% 60%, rgba(40,60,120,.18), transparent 45%),
-    #050507;
-  background-attachment: fixed;
 }
 .top {
   display: flex;
@@ -339,6 +344,7 @@ button.del {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,.7);
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   z-index: 100;
   align-items: center;
@@ -423,7 +429,7 @@ button.del {
 </div>
 <p class="author" id="author"></p>
 <p class="author"><a href="https://instagram.com/duisembaev_16" target="_blank" rel="noopener">📷 Instagram: @duisembaev_16</a></p>
-<div class="footer-ver"><span class="ver">v0.2</span></div>
+<div class="footer-ver"><span class="ver">v0.3</span></div>
 <div class="modal" id="infoModal">
 <div class="modalbox">
 <h3 id="infoTitle"></h3>
@@ -546,251 +552,15 @@ sr: 'zh-CN',
 loc: 'zh-CN'
 }
 };
-let lang = localStorage.getItem('lang') || 'ru';
-const $ = id => document.getElementById(id);
-const t = () => T[lang];
-const catName = c => (ICONS[c] || '') + ' ' + (t().cats[c] || c);
-let items = load();
-function load() {
-let v = JSON.parse(localStorage.getItem(KEY) || 'null');
-if (v) return v;
-const old = JSON.parse(localStorage.getItem(OLD_KEY) || '[]');
-const catMap = {'Продукты':'food','Транспорт':'transport','Кафе и рестораны':'cafe','Жильё':'home','Связь':'phone','Здоровье':'health','Одежда':'clothes','Развлечения':'fun','Прочее':'other'};
-return old.map(o => ({ sum: o.sum, cat: catMap[o.cat] || 'other', ts: Date.now() }));
+
+function lsGet(k) {
+  try { return localStorage.getItem(k); } catch (e) { return null; }
 }
-function save() { localStorage.setItem(KEY, JSON.stringify(items)); }
-const fmtSum = n => n.toLocaleString('ru-RU') + ' ₸';
-const fmtSumHtml = n => '<span>' + n.toLocaleString('ru-RU') + ' ₸</span>';
-function fmtDate(ts) {
-const d = new Date(ts);
-const p = n => String(n).padStart(2, '0');
-return p(d.getDate()) + '.' + p(d.getMonth() + 1) + '.' + d.getFullYear() + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+function lsSet(k, v) {
+  try { localStorage.setItem(k, v); } catch (e) {}
 }
-function applyLang() {
-const L = t();
-document.documentElement.lang = lang;
-$('title').textContent = L.title;
-$('brandBtn').innerHTML = LOGO + '<span>Alpin</span>';
-$('mic').textContent = $('mic').classList.contains('rec') ? L.stop : L.voice;
-$('hint').textContent = L.hint;
-$('amount').placeholder = L.amount;
-$('add').textContent = L.add;
-$('thDate').textContent = L.date;
-$('thCat').textContent = L.cat;
-$('thSum').textContent = L.sum;
-$('exportBtn').textContent = '💾 ' + L.exp;
-$('importBtn').textContent = '📂 ' + L.imp;
-$('author').textContent = L.author;
-$('infoTitle').textContent = L.infoTitle;
-$('infoText1').textContent = L.info1;
-$('infoText2').textContent = L.info2;
-$('infoText3').textContent = L.info3;
-$('archTitle').textContent = '📅 ' + L.archive;
-const sel = $('cat'), cur = sel.value || 'food';
-sel.innerHTML = CATS.map(c => '<option value="' + c + '">' + catName(c) + '</option>').join('');
-sel.value = cur;
-if (rec) rec.lang = L.sr;
-render();
+function has(o, k) {
+  return Object.prototype.hasOwnProperty.call(o, k);
 }
-function render() {
-const L = t();
-const tbody = $('rows');
-tbody.innerHTML = '';
-let total = 0, month = 0;
-const now = new Date();
-for (let i = items.length - 1; i >= 0; i--) {
-const it = items[i];
-total += it.sum;
-const d = new Date(it.ts);
-if (d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) month += it.sum;
-const tr = document.createElement('tr');
-tr.innerHTML = '<td class="dt">' + fmtDate(it.ts) + '</td><td>' + catName(it.cat) + '</td><td class="sum">' + fmtSum(it.sum) + '</td><td><button class="del" data-i="' + i + '">' + L.del + '</button></td>';
-tbody.appendChild(tr);
-}
-$('month').innerHTML = L.month + ': ' + fmtSumHtml(month);
-$('total').innerHTML = L.total + ': ' + fmtSumHtml(total);
-renderArchive();
-}
-function renderArchive() {
-const L = t();
-const byMonth = {};
-items.forEach(it => {
-const d = new Date(it.ts);
-const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
-byMonth[key] = (byMonth[key] || 0) + it.sum;
-});
-const keys = Object.keys(byMonth).sort().reverse();
-$('archive').innerHTML = keys.map(k => {
-const [y, m] = k.split('-');
-const name = new Date(+y, +m - 1, 1).toLocaleDateString(L.loc, { month: 'long', year: 'numeric' });
-return '<div class="arch-row"><span>' + name + '</span><b>' + fmtSum(byMonth[k]) + '</b></div>';
-}).join('');
-}
-function addItem(sum, cat) {
-if (!sum || sum <= 0) return;
-items.push({ sum: Math.round(sum), cat: cat, ts: Date.now() });
-save();
-render();
-}
-$('add').onclick = () => {
-const v = parseFloat($('amount').value);
-addItem(v, $('cat').value);
-$('amount').value = '';
-};
-$('rows').onclick = e => {
-if (e.target.classList.contains('del')) {
-if (confirm(t().confirm)) {
-items.splice(parseInt(e.target.dataset.i), 1);
-save();
-render();
-}
-}
-};
-$('langBtn').onclick = e => {
-e.stopPropagation();
-$('langBtn').classList.remove('spin');
-void $('langBtn').offsetWidth;
-$('langBtn').classList.add('spin');
-const m = $('langMenu');
-m.style.display = m.style.display === 'block' ? 'none' : 'block';
-setTimeout(() => { $('langBtn').classList.remove('spin') }, 800);
-};
-document.addEventListener('click', () => { $('langMenu').style.display = 'none'; });
-$('langMenu').onclick = e => {
-const l = e.target.closest('button')?.dataset.l || e.target.dataset.l;
-if (l) { lang = l; localStorage.setItem('lang', l); applyLang(); }
-};
-$('exportBtn').onclick = () => {
-const blob = new Blob([JSON.stringify(items, null, 2)], { type: 'application/json' });
-const a = document.createElement('a');
-const d = new Date();
-a.href = URL.createObjectURL(blob);
-a.download = 'expenses-' + d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0') + '.json';
-document.body.appendChild(a);
-a.click();
-a.remove();
-};
-$('importBtn').onclick = () => $('fileIn').click();
-$('fileIn').onchange = e => {
-const f = e.target.files[0];
-if (!f) return;
-const r = new FileReader();
-r.onload = () => {
-try {
-const data = JSON.parse(r.result);
-if (!Array.isArray(data)) throw 0;
-const clean = data.filter(x => x && typeof x.sum === 'number' && x.ts).map(x => ({ sum: x.sum, cat: CATS.includes(x.cat) ? x.cat : 'other', ts: x.ts }));
-if (confirm(t().impAsk)) {
-items = clean;
-save();
-render();
-alert(t().impOk + ' ' + clean.length);
-}
-} catch (err) { alert(t().impBad); }
-e.target.value = '';
-};
-r.readAsText(f);
-};
-$('infoBtn').onclick = () => { $('infoModal').classList.add('open') };
-$('infoOk').onclick = () => { $('infoModal').classList.remove('open') };
-$('infoModal').onclick = e => { if (e.target.id === 'infoModal') e.currentTarget.classList.remove('open') };
-function parseRu(text) {
-const units = { ноль:0, один:1, одна:1, одну:1, два:2, две:2, три:3, четыре:4, пять:5, шесть:6, семь:7, восемь:8, девять:9, десять:10, одиннадцать:11, двенадцать:12, тринадцать:13, четырнадцать:14, пятнадцать:15, шестнадцать:16, семнадцать:17, восемнадцать:18, девятнадцать:19, двадцать:20, тридцать:30, сорок:40, пятьдесят:50, шестьдесят:60, семьдесят:70, восемьдесят:80, девяносто:90, сто:100, двести:200, триста:300, четыреста:400, пятьсот:500, шестьсот:600, семьсот:700, восемьсот:800, девятьсот:900, полтора:1.5, полторы:1.5 };
-let total = 0, cur = 0, found = false;
-text.split(/\s+/).forEach(w => {
-if (w in units) { cur += units[w]; found = true; }
-else if (/^(тысяч|тыс|тыщ)/.test(w)) { total += (cur || 1) * 1000; cur = 0; found = true; }
-else if (/^(миллион|млн|лям)/.test(w)) { total += (cur || 1) * 1000000; cur = 0; found = true; }
-else if (/^\d+$/.test(w)) { cur += parseInt(w); found = true; }
-});
-total += cur;
-return found ? Math.round(total) : 0;
-}
-function parseKk(text) {
-const units = { бір:1, екі:2, үш:3, төрт:4, бес:5, алты:6, жеті:7, сегіз:8, тоғыз:9, он:10, жиырма:20, отыз:30, қырық:40, елу:50, алпыс:60, жетпіс:70, сексен:80, тоқсан:90, жүз:100 };
-let total = 0, cur = 0, found = false;
-text.split(/\s+/).forEach(w => {
-if (w in units) {
-if (w === 'жүз') { cur = (cur || 1) * 100; } else { cur += units[w]; }
-found = true;
-}
-else if (/^мың/.test(w) || /^мын/.test(w)) { total += (cur || 1) * 1000; cur = 0; found = true; }
-else if (/^миллион/.test(w)) { total += (cur || 1) * 1000000; cur = 0; found = true; }
-else if (/^\d+$/.test(w)) { cur += parseInt(w); found = true; }
-});
-total += cur;
-return found ? total : 0;
-}
-function parseZh(text) {
-const d = { '零':0,'一':1,'二':2,'两':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9 };
-const arabic = text.replace(/\s/g, '').match(/\d+/);
-if (arabic) {
-let n = parseInt(arabic[0]);
-if (/万/.test(text) && n < 10000) n *= 10000;
-else if (/千/.test(text) && n < 1000) n *= 1000;
-return n;
-}
-let total = 0, section = 0, num = 0, found = false;
-for (const ch of text) {
-if (ch in d) { num = d[ch]; found = true; }
-else if (ch === '十') { section += (num || 1) * 10; num = 0; found = true; }
-else if (ch === '百') { section += (num || 1) * 100; num = 0; found = true; }
-else if (ch === '千') { section += (num || 1) * 1000; num = 0; found = true; }
-else if (ch === '万') { total += (section + num || 1) * 10000; section = 0; num = 0; found = true; }
-}
-total += section + num;
-return found ? total : 0;
-}
-function parseAmount(text) {
-text = text.toLowerCase().replace(/ё/g, 'е');
-text = text.replace(/(\d)[\s,]+(?=\d)/g, '$1');
-const m = text.match(/(\d+(?:[.,]\d+)?)\s*(тыс|тыщ|мың|мын|млн|миллион|лям|к(?![\p{L}])|k(?![\p{L}]))?/u);
-if (lang !== 'zh' && m) {
-let n = parseFloat(m[1].replace(',', '.'));
-if (m[2]) n *= /^(млн|миллион|лям)/.test(m[2]) ? 1000000 : 1000;
-return Math.round(n);
-}
-if (lang === 'ru') return parseRu(text);
-if (lang === 'kk') return parseKk(text);
-return parseZh(text);
-}
-const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-let rec = null;
-if (!SR) {
-$('mic').disabled = true;
-} else {
-rec = new SR();
-rec.interimResults = false;
-rec.onresult = e => {
-const text = e.results[0][0].transcript;
-const sum = parseAmount(text);
-const L = t();
-if (sum > 0) {
-addItem(sum, $('cat').value);
-$('hint').textContent = L.added + ': ' + fmtSum(sum) + ' (' + L.heard + ': «' + text + '»)';
-} else {
-$('hint').textContent = L.nope + ': «' + text + '». ' + L.again;
-}
-};
-rec.onend = () => { $('mic').classList.remove('rec'); $('mic').textContent = t().voice; };
-rec.onerror = () => { $('hint').textContent = t().micErr; };
-$('mic').onclick = () => {
-if ($('mic').classList.contains('rec')) { rec.stop(); return; }
-rec.lang = t().sr;
-$('mic').classList.add('rec');
-$('mic').textContent = t().stop;
-rec.start();
-};
-}
-function tick() {
-const d = new Date();
-const p = n => String(n).padStart(2, '0');
-$('clock').textContent = p(d.getDate()) + '.' + p(d.getMonth() + 1) + '.' + d.getFullYear() + ', ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
-}
-tick();
-setInterval(tick, 1000);
-applyLang();
-if (!SR) $('hint').textContent = t().noSR;
-</script>
-</body>
-</html>
+
+let lang = lsGet('l
