@@ -50,6 +50,9 @@
     display: flex; align-items: center; gap: 8px;
   }
   button.lang svg { width: 22px; height: 22px; }
+  .topright { display: flex; align-items: center; gap: 8px; }
+  button.brand { cursor: default; }
+  button.globe { font-size: 20px; padding: 9px 12px; border-radius: 16px; line-height: 1; }
 
   .micwrap { background: rgba(255,255,255,.08); border-radius: 18px; padding: 14px; text-align: center; }
   button.mic { padding: 12px 26px; font-size: 20px; border-radius: 22px; display: inline-flex; align-items: center; gap: 10px; }
@@ -111,7 +114,10 @@
 
 <div class="top">
   <h1 id="title"></h1>
-  <button class="lang" id="langBtn"></button>
+  <div class="topright">
+    <button class="lang brand" id="brandBtn"></button>
+    <button class="globe" id="langBtn">🌐</button>
+  </div>
   <div class="langmenu" id="langMenu">
     <button data-l="ru">🇷🇺 Русский</button>
     <button data-l="kk">🇰🇿 Қазақша</button>
@@ -256,7 +262,7 @@ function applyLang() {
   const L = t();
   document.documentElement.lang = lang;
   $('title').textContent = L.title;
-  $('langBtn').innerHTML = LOGO + '<span>Alpin</span>';
+  $('brandBtn').innerHTML = LOGO + '<span>Alpin</span>';
   $('mic').textContent = $('mic').classList.contains('rec') ? L.stop : L.voice;
   $('hint').textContent = L.hint;
   $('amount').placeholder = L.amount;
