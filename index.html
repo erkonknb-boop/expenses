@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<title>Expenses - Alpin Animated FINAL</title>
+<title>Expenses Alpin FINAL</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{background:#000}
 body{font-family:-apple-system,Helvetica,Arial,sans-serif;margin:0;padding:16px;padding-top:calc(16px + env(safe-area-inset-top));padding-bottom:calc(24px + env(safe-area-inset-bottom));min-height:100vh;color:#fff;background:radial-gradient(circle at 20% 10%,rgba(120,20,45,.25),transparent 40%),radial-gradient(circle at 80% 60%,rgba(40,60,120,.18),transparent 45%),#050507;background-attachment:fixed}
 .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;position:relative}
 h1{font-size:24px;margin:0;color:#a3263f;font-weight:700}
-.card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:22px;padding:14px;margin-bottom:14px}
+.card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-radius:22px;padding:14px;margin-bottom:14px}
 button{font-size:17px;border:0;border-radius:16px;padding:12px 16px;color:#fff;background:linear-gradient(180deg,#8a1f38,#5e1426);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 2px 8px rgba(0,0,0,.4);font-family:inherit;cursor:pointer}
 button:active{opacity:.85}
 .topright{display:flex;align-items:center;gap:8px}
@@ -18,10 +18,10 @@ button:active{opacity:.85}
 .brand svg{width:22px;height:22px;position:relative;z-index:2}.brand span{position:relative;z-index:2}
 .brand::after{content:'';position:absolute;top:-50%;left:-30%;width:40%;height:200%;background:linear-gradient(120deg,transparent 0%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.6) 70%,transparent 100%);transform:rotate(15deg);animation:shine 2.2s infinite;z-index:1}
 @keyframes shine{0%{left:-40%}60%{left:130%}100%{left:130%}}
-button.globe{font-size:20px;padding:9px 12px;border-radius:16px;line-height:1;transition:transform .3s}
+button.globe{font-size:20px;padding:9px 12px;border-radius:16px;line-height:1}
 button.globe.spin{animation:spin 0.8s cubic-bezier(.34,1.56,.64,1)}
 @keyframes spin{0%{transform:rotate(0deg) scale(1)}30%{transform:rotate(180deg) scale(1.15)}100%{transform:rotate(360deg) scale(1)}}
-.langmenu{display:none;position:absolute;right:0;top:52px;background:rgba(30,30,34,.96);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.6);overflow:hidden;z-index:20;min-width:170px}
+.langmenu{display:none;position:absolute;right:0;top:52px;background:rgba(30,30,34,.96);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.6);overflow:hidden;z-index:20;min-width:170px}
 .langmenu button{display:block;width:100%;background:transparent;box-shadow:none;color:#fff;border-radius:0;border-bottom:1px solid rgba(255,255,255,.08);text-align:left;font-size:15px;padding:12px 14px}
 .langmenu button .flag{display:inline-block;animation:wind 1.8s ease-in-out infinite;transform-origin:0% 50%}
 @keyframes wind{0%,100%{transform:skewX(0deg) translateX(0)}25%{transform:skewX(-6deg) translateX(1px)}50%{transform:skewX(4deg) translateX(-1px)}75%{transform:skewX(-3deg)}}
@@ -53,9 +53,9 @@ button.info{width:38px;height:38px;padding:0;border-radius:50%;font-size:18px;fo
 </head>
 <body>
 <div class="top">
-<h1 id="title"></h1>
+<h1 id="title">Расходы, ₸</h1>
 <div class="topright">
-<div class="brand" id="brandBtn"></div>
+<div class="brand" id="brandBtn"><svg viewBox="0 0 24 24" fill="#fff"><path d="M1 20 L9 6 L14 14 L16.5 10 L23 20 Z"/><path d="M9 6 L11.2 9.8 L9 8.6 L6.8 9.8 Z" fill="#8a1f38"/></svg><span>Alpin</span></div>
 <button class="globe" id="langBtn">🌐</button>
 <button class="info" id="infoBtn">i</button>
 </div>
@@ -65,68 +65,57 @@ button.info{width:38px;height:38px;padding:0;border-radius:50%;font-size:18px;fo
 <button data-l="zh"><span class="flag">🇨🇳</span> 中文</button>
 </div>
 </div>
-<div class="card"><div class="micwrap"><button class="mic" id="mic"></button></div><p class="hint" id="hint"></p></div>
-<div class="card"><input id="amount" type="number" inputmode="numeric"><div class="row"><select id="cat"></select><button class="add" id="add"></button></div></div>
+<div class="card"><div class="micwrap"><button class="mic" id="mic">🎤 Голос</button></div><p class="hint" id="hint">Скажи только сумму, например «тысяча тенге»</p></div>
+<div class="card"><input id="amount" type="number" inputmode="numeric" placeholder="Сумма в тенге"><div class="row"><select id="cat"></select><button class="add" id="add">Добавить</button></div></div>
 <div class="clock" id="clock"></div>
-<div class="card"><table><thead><tr><th id="thDate"></th><th id="thCat"></th><th class="sum" id="thSum"></th><th></th></tr></thead><tbody id="rows"></tbody></table><div class="month" id="month"></div><div class="total" id="total"></div></div>
-<div class="card"><p class="arch-title" id="archTitle"></p><div id="archive"></div></div>
-<div class="card"><div class="row"><button class="gray" id="exportBtn"></button><button class="gray" id="importBtn"></button></div><input type="file" id="fileIn" accept=".json,application/json" style="display:none"></div>
-<p class="author" id="author"></p>
-<p class="author"><a href="https://instagram.com/duisembaev_16" target="_blank" rel="noopener">📷 Instagram: @duisembaev_16</a></p>
-
-<div class="modal" id="infoModal">
-<div class="modalbox">
-<h3 id="infoTitle"></h3>
-<p id="infoText1"></p>
-<p id="infoText2"></p>
-<p id="infoText3"></p>
-<button class="ok" id="infoOk">OK</button>
-</div>
-</div>
-
+<div class="card"><table><thead><tr><th id="thDate">Дата и время</th><th id="thCat">Категория</th><th class="sum" id="thSum">Сумма</th><th></th></tr></thead><tbody id="rows"></tbody></table><div class="month" id="month"></div><div class="total" id="total"></div></div>
+<div class="card"><p class="arch-title" id="archTitle">📅 Архив по месяцам</p><div id="archive"></div></div>
+<div class="card"><div class="row"><button class="gray" id="exportBtn">💾 Сохранить копию</button><button class="gray" id="importBtn">📂 Восстановить</button></div><input type="file" id="fileIn" accept=".json,application/json" style="display:none"></div>
+<p class="author" id="author">Разработчик: Дуйсембаев Ернат</p>
+<p class="author"><a href="https://instagram.com/duisembaev_16" target="_blank">📷 Instagram: @duisembaev_16</a></p>
+<div class="modal" id="infoModal"><div class="modalbox"><h3 id="infoTitle">🔒 Приватность и данные</h3><p id="infoText1">Этот сайт НЕ хранит ваши расходы на сервере. Все данные остаются только на вашем телефоне в браузере (localStorage).</p><p id="infoText2">Никакой регистрации, никаких паролей. Даже я, разработчик, не вижу сколько вы потратили.</p><p id="infoText3">Хотите перенести на другой телефон? Используйте «Сохранить копию» и «Восстановить из файла». Если очистите кеш браузера — данные удалятся.</p><button class="ok" id="infoOk">OK</button></div></div>
 <script>
 const NEW_KEY='expenses_v2';const OLD_KEYS=['expenses','expenses_v1','expenses-data','qrc-expenses','data','expenses_tenge'];
-const LOGO='<svg viewBox="0 0 24 24" fill="#fff"><path d="M1 20 L9 6 L14 14 L16.5 10 L23 20 Z"/><path d="M9 6 L11.2 9.8 L9 8.6 L6.8 9.8 Z" fill="#8a1f38"/></svg>';
 const CATS=['food','transport','fuel','cafe','home','phone','health','pharmacy','clothes','fun','cinema','sport','gifts','education','subs','beauty','kids','pets','travel','taxes','other'];
 const ICONS={food:'🛒',transport:'🚗',fuel:'⛽',cafe:'🍽️',home:'🏠',phone:'📱',health:'🩺',pharmacy:'💊',clothes:'👕',fun:'🎮',cinema:'🎬',sport:'🏋️',gifts:'🎁',education:'📚',subs:'🔁',beauty:'💄',kids:'🧸',pets:'🐾',travel:'✈️',taxes:'🧾',other:'📦'};
-const T={
-ru:{title:'Расходы, ₸',voice:'🎤 Голос',stop:'⏹ Слушаю...',hint:'Скажи только сумму, например «тысяча тенге».',amount:'Сумма в тенге',add:'Добавить',date:'Дата и время',cat:'Категория',sum:'Сумма',total:'Итого',month:'За месяц',archive:'Архив по месяцам',del:'Удалить',confirm:'Удалить эту трату?',added:'Добавлено',heard:'услышано',nope:'Не понял сумму',again:'Попробуй ещё раз.',micErr:'Ошибка микрофона. Проверь разрешение в Safari.',noSR:'Голосовой ввод не поддерживается, используй ручной.',exp:'Сохранить копию',imp:'Восстановить из файла',impOk:'Восстановлено трат:',impBad:'Не удалось прочитать файл.',impAsk:'Заменить текущие траты данными из файла?',author:'Разработчик: Дуйсембаев Ернат',infoTitle:'🔒 Приватность и данные',info1:'Этот сайт НЕ хранит ваши расходы на сервере. Все данные остаются только на вашем телефоне / браузере в localStorage.',info2:'Никакой регистрации, никаких паролей. Даже я, разработчик, не вижу сколько вы потратили.',info3:'Хотите перенести на другой телефон? Используйте кнопки «Сохранить копию» и «Восстановить из файла». Если очистите кеш браузера — данные удалятся.',sr:'ru-RU',loc:'ru-RU'},
-kk:{title:'Шығындар, ₸',voice:'🎤 Дауыс',stop:'⏹ Тыңдап тұрмын...',hint:'Тек соманы айтыңыз, мысалы «мың теңге».',amount:'Сома (теңге)',add:'Қосу',date:'Күні мен уақыты',cat:'Санат',sum:'Сома',total:'Жалпы',month:'Айға',archive:'Айлар бойынша архив',del:'Жою',confirm:'Бұл шығынды жоясыз ба?',added:'Қосылды',heard:'естілді',nope:'Соманы түсінбедім',again:'Тағы бір рет айтыңыз.',micErr:'Микрофон қатесі. Safari-де рұқсатты тексеріңіз.',noSR:'Дауыспен енгізу қолдау таппайды, қолмен енгізіңіз.',exp:'Көшірмені сақтау',imp:'Файлдан қалпына келтіру',impOk:'Қалпына келтірілді:',impBad:'Файлды оқу мүмкін болмады.',impAsk:'Ағымдағы шығындарды файлдағымен алмастырасыз ба?',author:'Әзірлеуші: Дуйсембаев Ернат',infoTitle:'🔒 Құпиялылық және деректер',info1:'Бұл сайт сіздің шығындарыңызды серверде сақтамайды. Барлығы тек телефоныңызда, localStorage-те қалады.',info2:'Тіркелу жоқ, пароль жоқ. Әзірлеуші ретінде мен де сіздің шығындарыңызды көрмеймін.',info3:'Басқа телефонға көшіру үшін «Көшірмені сақтау» батырмасын қолданыңыз. Браузер кэшін тазартсаңыз — деректер өшеді.',sr:'kk-KZ',loc:'kk-KZ'},
-zh:{title:'支出, ₸',voice:'🎤 语音',stop:'⏹ 正在听...',hint:'只说金额，例如“一千坚戈”。',amount:'金额（坚戈）',add:'添加',date:'日期和时间',cat:'类别',sum:'金额',total:'合计',month:'本月',archive:'按月归档',del:'删除',confirm:'删除这笔支出吗？',added:'已添加',heard:'听到',nope:'没听懂金额',again:'请再试一次。',micErr:'麦克风错误。请检查 Safari 的权限。',noSR:'不支持语音输入，请手动输入。',exp:'保存备份',imp:'从文件恢复',impOk:'已恢复笔数：',impBad:'无法读取文件。',impAsk:'用文件中的数据替换当前支出吗？',author:'开发者：Duisembayev Yernat',infoTitle:'🔒 隐私和数据',info1:'本网站不会在服务器上保存您的支出。所有数据仅保存在您手机浏览器的 localStorage 中。',info2:'无需注册，无需密码。即使我是开发者，也看不到您的花费。',info3:'想换手机？请使用“保存备份”和“从文件恢复”按钮。如果清除浏览器缓存，数据会被删除。',sr:'zh-CN',loc:'zh-CN'}
-};
-let lang=localStorage.getItem('lang')||'ru';const $=id=>document.getElementById(id);const t=()=>T[lang];const catName=c=>(ICONS[c]||'')+' '+(t().cats[c]||c);
-function parseAnyDate(s){if(!s) return Date.now();if(typeof s==='number') return s;s=String(s).trim();let m=s.match(/(\d{1,2})\.(\d{4})[,\s]+(\d{1,2}):(\d{2})(?::(\d{2}))?/);if(m) return new Date(+m[3],+m[2]-1,+m[1],+m[4],+m[5],+(m[6]||0)).getTime();m=s.match(/(\d{1,2})\.(\d{1,2})/);if(m){let y=new Date().getFullYear();return new Date(y,+m[2]-1,+m[1],12,0).getTime()}let d=Date.parse(s);return isNaN(d)?Date.now():d}
-function load(){let v=JSON.parse(localStorage.getItem(NEW_KEY)||'null');if(Array.isArray(v)&&v.length>0) return v;for(let k of OLD_KEYS){try{let raw=localStorage.getItem(k);if(!raw) continue;let arr=JSON.parse(raw);if(!Array.isArray(arr)||arr.length===0) continue;let norm=arr.map(o=>{if(o.ts) return {sum:o.sum,cat:o.cat||'other',ts:parseAnyDate(o.ts)};if(o.date) return {sum:o.sum,cat:'other',ts:parseAnyDate(o.date)};if(typeof o.sum==='number') return {sum:o.sum,cat:o.cat||'food',ts:parseAnyDate(o.date||Date.now())};return null}).filter(Boolean);if(norm.length>0){localStorage.setItem(NEW_KEY,JSON.stringify(norm));return norm}}catch(e){}}return []}
-let items=load();function save(){localStorage.setItem(NEW_KEY,JSON.stringify(items))}
-const fmtSum=n=>n.toLocaleString('ru-RU')+' ₸';const fmtSumHtml=n=>'<span>'+n.toLocaleString('ru-RU')+' ₸</span>';function fmtDate(ts){const d=new Date(ts);const p=n=>String(n).padStart(2,'0');return p(d.getDate())+'.'+p(d.getMonth()+1)+'.'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes())}
-function applyLang(){const L=t();document.documentElement.lang=lang;$('title').textContent=L.title;$('brandBtn').innerHTML=LOGO+'<span>Alpin</span>';$('mic').textContent=$('mic').classList.contains('rec')?L.stop:L.voice;$('hint').textContent=L.hint;$('amount').placeholder=L.amount;$('add').textContent=L.add;$('thDate').textContent=L.date;$('thCat').textContent=L.cat;$('thSum').textContent=L.sum;$('exportBtn').textContent='💾 '+L.exp;$('importBtn').textContent='📂 '+L.imp;$('author').textContent=L.author;$('infoTitle').textContent=L.infoTitle;$('infoText1').textContent=L.info1;$('infoText2').textContent=L.info2;$('infoText3').textContent=L.info3;const sel=$('cat'),cur=sel.value||'food';sel.innerHTML=CATS.map(c=>'<option value="'+c+'">'+catName(c)+'</option>').join('');sel.value=cur;if(rec) rec.lang=L.sr;render()}
-function render(){const L=t();const tbody=$('rows');tbody.innerHTML='';let total=0,month=0;const now=new Date();for(let i=items.length-1;i>=0;i--){const it=items[i];total+=it.sum;const d=new Date(it.ts);if(d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear()) month+=it.sum;const tr=document.createElement('tr');tr.innerHTML='<td class="dt">'+fmtDate(it.ts)+'</td><td>'+catName(it.cat)+'</td><td class="sum">'+fmtSum(it.sum)+'</td><td><button class="del" data-i="'+i+'">'+L.del+'</button></td>';tbody.appendChild(tr)} $('month').innerHTML=L.month+': '+fmtSumHtml(month);$('total').innerHTML=L.total+': '+fmtSumHtml(total);renderArchive()}
-function renderArchive(){const L=t();$('archTitle').textContent='📅 '+L.archive;const byMonth={};items.forEach(it=>{const d=new Date(it.ts);const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');byMonth[key]=(byMonth[key]||0)+it.sum});const keys=Object.keys(byMonth).sort().reverse();$('archive').innerHTML=keys.map(k=>{const [y,m]=k.split('-');const name=new Date(+y,+m-1,1).toLocaleDateString(L.loc,{month:'long',year:'numeric'});return '<div class="arch-row"><span>'+name+'</span><b>'+fmtSum(byMonth[k])+'</b></div>'}).join('')}
-function addItem(sum,cat){if(!sum||sum<=0) return;items.push({sum:Math.round(sum),cat:cat,ts:Date.now()});save();render()}
-$('add').onclick=()=>{const v=parseFloat($('amount').value);addItem(v,$('cat').value);$('amount').value=''}
-$('rows').onclick=e=>{if(e.target.classList.contains('del')){if(confirm(t().confirm)){items.splice(parseInt(e.target.dataset.i),1);save();render()}}}
-$('langBtn').onclick=e=>{
- e.stopPropagation();
- $('langBtn').classList.remove('spin');void $('langBtn').offsetWidth;$('langBtn').classList.add('spin');
- const m=$('langMenu');m.style.display=m.style.display==='block'?'none':'block';
- setTimeout(()=>{$('langBtn').classList.remove('spin')},800);
-};
-document.addEventListener('click',()=>{$('langMenu').style.display='none'});
-$('langMenu').onclick=e=>{const l=e.target.closest('button')?.dataset.l;if(l){lang=l;localStorage.setItem('lang',l);applyLang()}}
-$('exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify(items,null,2)],{type:'application/json'});const a=document.createElement('a');const d=new Date();a.href=URL.createObjectURL(blob);a.download='expenses-'+d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+'.json';document.body.appendChild(a);a.click();a.remove()};
+const NAMES={food:'Продукты',transport:'Транспорт',fuel:'Заправка',cafe:'Кафе и рестораны',home:'Жильё',phone:'Связь',health:'Здоровье',pharmacy:'Аптека',clothes:'Одежда',fun:'Развлечения',cinema:'Кино',sport:'Спорт',gifts:'Подарки',education:'Образование',subs:'Подписки',beauty:'Красота и уход',kids:'Дети',pets:'Питомцы',travel:'Путешествия',taxes:'Налоги и платежи',other:'Прочее'};
+const $=id=>document.getElementById(id);
+function load(){try{let v=JSON.parse(localStorage.getItem(NEW_KEY)||'null');if(v&&v.length) return v;for(let k of OLD_KEYS){let r=localStorage.getItem(k);if(!r) continue;let a=JSON.parse(r);if(a&&a.length){localStorage.setItem(NEW_KEY,JSON.stringify(a));return a;}}}catch(e){}return []}
+let items=load();
+function save(){localStorage.setItem(NEW_KEY,JSON.stringify(items));}
+function fmt(n){return n.toLocaleString('ru-RU')+' ₸';}
+function fmtHtml(n){return '<span>'+n.toLocaleString('ru-RU')+' ₸</span>';}
+function fmtDate(ts){let d=new Date(ts);let p=n=>String(n).padStart(2,'0');return p(d.getDate())+'.'+p(d.getMonth()+1)+'.'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes());}
+function render(){
+ let tbody=$('rows');tbody.innerHTML='';let total=0,month=0;let now=new Date();
+ for(let i=items.length-1;i>=0;i--){
+  let it=items[i];total+=it.sum;let d=new Date(it.ts);if(d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear()) month+=it.sum;
+  let tr=document.createElement('tr');tr.innerHTML='<td class="dt">'+fmtDate(it.ts)+'</td><td>'+(ICONS[it.cat]||'')+' '+(NAMES[it.cat]||it.cat)+'</td><td class="sum">'+fmt(it.sum)+'</td><td><button class="del" data-i="'+i+'">Удалить</button></td>';tbody.appendChild(tr);
+ }
+ $('month').innerHTML='За месяц: '+fmtHtml(month);$('total').innerHTML='Итого: '+fmtHtml(total);
+ let by={};items.forEach(it=>{let d=new Date(it.ts);let k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');by[k]=(by[k]||0)+it.sum;});
+ let keys=Object.keys(by).sort().reverse();$('archive').innerHTML=keys.map(k=>'<div class="arch-row"><span>'+k+'</span><b>'+fmt(by[k])+'</b></div>').join('');
+}
+function addItem(sum,cat){
+ if(!sum||isNaN(sum)||sum<=0){alert('Введи сумму');return;}
+ items.push({sum:Math.round(sum),cat:cat||'food',ts:Date.now()});save();render();$('amount').value='';
+}
+$('add').onclick=()=>{let v=parseFloat($('amount').value);addItem(v,$('cat').value);};
+$('rows').onclick=e=>{if(e.target.classList.contains('del')){if(confirm('Удалить?')){items.splice(parseInt(e.target.dataset.i),1);save();render();}}};
+$('langBtn').onclick=e=>{e.stopPropagation();$('langBtn').classList.remove('spin');void $('langBtn').offsetWidth;$('langBtn').classList.add('spin');let m=$('langMenu');m.style.display=m.style.display==='block'?'none':'block';setTimeout(()=>$('langBtn').classList.remove('spin'),800);};
+document.addEventListener('click',()=>{$('langMenu').style.display='none';});
+$('langMenu').onclick=e=>{let b=e.target.closest('button');if(!b) return;alert('Язык '+b.dataset.l+' - скоро');};
+$('exportBtn').onclick=()=>{let blob=new Blob([JSON.stringify(items,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='expenses.json';a.click();};
 $('importBtn').onclick=()=>$('fileIn').click();
-$('fileIn').onchange=e=>{const f=e.target.files[0];if(!f) return;const r=new FileReader();r.onload=()=>{try{const data=JSON.parse(r.result);if(!Array.isArray(data)) throw 0;const clean=data.filter(x=>x&&typeof x.sum==='number').map(x=>({sum:x.sum,cat:CATS.includes(x.cat)?x.cat:'other',ts:parseAnyDate(x.ts||x.date)}));if(confirm(t().impAsk)){items=clean;save();render();alert(t().impOk+' '+clean.length)}}catch(err){alert(t().impBad)} e.target.value=''};r.readAsText(f)};
-$('infoBtn').onclick=()=>{$('infoModal').classList.add('open')};
-$('infoOk').onclick=()=>{$('infoModal').classList.remove('open')};
-$('infoModal').onclick=e=>{if(e.target.id==='infoModal') e.currentTarget.classList.remove('open')};
-function parseRu(text){const units={ноль:0,один:1,одна:1,одну:1,два:2,две:2,три:3,четыре:4,пять:5,шесть:6,семь:7,восемь:8,девять:9,десять:10,одиннадцать:11,двенадцать:12,тринадцать:13,четырнадцать:14,пятнадцать:15,шестнадцать:16,семнадцать:17,восемнадцать:18,девятнадцать:19,двадцать:20,тридцать:30,сорок:40,пятьдесят:50,шестьдесят:60,семьдесят:70,восемьдесят:80,девяносто:90,сто:100,двести:200,триста:300,четыреста:400,пятьсот:500,шестьсот:600,семьсот:700,восемьсот:800,девятьсот:900};let total=0,cur=0,found=false;text.split(/\s+/).forEach(w=>{if(w in units){cur+=units[w];found=true}else if(/^(тысяч|тыс|тыщ)/.test(w)){total+=(cur||1)*1000;cur=0;found=true}else if(/^(миллион|млн|лям)/.test(w)){total+=(cur||1)*1000000;cur=0;found=true}else if(/^\d+$/.test(w)){cur+=parseInt(w);found=true}});total+=cur;return found?Math.round(total):0}
-function parseKk(text){const units={бір:1,екі:2,үш:3,төрт:4,бес:5,алты:6,жеті:7,сегіз:8,тоғыз:9,он:10,жиырма:20,отыз:30,қырық:40,елу:50,алпыс:60,жетпіс:70,сексен:80,тоқсан:90,жүз:100};let total=0,cur=0,found=false;text.split(/\s+/).forEach(w=>{if(w in units){if(w==='жүз'){cur=(cur||1)*100}else{cur+=units[w]}found=true}else if(/^мың/.test(w)||/^мын/.test(w)){total+=(cur||1)*1000;cur=0;found=true}else if(/^\d+$/.test(w)){cur+=parseInt(w);found=true}});total+=cur;return found?total:0}
-function parseZh(text){let cleaned=text.replace(/,/g,'').replace(/\s/g,'');let arabic=cleaned.match(/\d+/);if(arabic){let n=parseInt(arabic[0],10);if(/万/.test(text)&&n<10000) n*=10000;if(/千/.test(text)&&n<1000) n*=1000;return n}const d={'零':0,'一':1,'二':2,'两':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9};let total=0,section=0,num=0,found=false;for(const ch of text){if(ch in d){num=d[ch];found=true}else if(ch==='十'){section+=(num||1)*10;num=0;found=true}else if(ch==='百'){section+=(num||1)*100;num=0;found=true}else if(ch==='千'){section+=(num||1)*1000;num=0;found=true}else if(ch==='万'){total+=(section+num||1)*10000;section=0;num=0;found=true}}total+=section+num;return found?total:0}
-function parseAmount(text){text=text.toLowerCase().replace(/ё/g,'е');text=text.replace(/(\d)\s+(?=\d{3}(\D|$))/g,'$1');text=text.replace(/,/g,'');let m=text.match(/(\d+(?:[.,]\d+)?)\s*(тыс|тыщ|мың|мын|млн|миллион|лям|к|k)?\b/);if(lang!=='zh'&&m){let n=parseFloat(m[1].replace(',','.'));if(m[2]) n*= /^(млн|миллион|лям)/.test(m[2])?1000000:1000;return Math.round(n)}if(lang==='ru') return parseRu(text);if(lang==='kk') return parseKk(text);return parseZh(text)}
+$('fileIn').onchange=e=>{let f=e.target.files[0];if(!f) return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(Array.isArray(d)){items=d;save();render();alert('Восстановлено '+d.length);}}catch(err){alert('Ошибка файла');}};r.readAsText(f);};
+$('infoBtn').onclick=()=>$('infoModal').classList.add('open');$('infoOk').onclick=()=>$('infoModal').classList.remove('open');$('infoModal').onclick=e=>{if(e.target.id==='infoModal') e.currentTarget.classList.remove('open');};
+function parseAmount(t){t=t.toLowerCase().replace(/,/g,'');let m=t.match(/(\d+(\.\d+)?)/);if(m) return parseInt(m[1],10);return 0;}
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null;
-if(!SR){$('mic').disabled=true}else{rec=new SR();rec.interimResults=false;rec.onresult=e=>{const text=e.results[0][0].transcript;const sum=parseAmount(text);const L=t();if(sum>0){addItem(sum,$('cat').value);$('hint').textContent=L.added+': '+fmtSum(sum)+' ('+L.heard+': «'+text+'»)'}else{$('hint').textContent=L.nope+': «'+text+'». '+L.again}};rec.onend=()=>{$('mic').classList.remove('rec');$('mic').textContent=t().voice};rec.onerror=()=>{$('hint').textContent=t().micErr};$('mic').onclick=()=>{if($('mic').classList.contains('rec')){rec.stop();return}rec.lang=t().sr;$('mic').classList.add('rec');$('mic').textContent=t().stop;rec.start()}}
-function tick(){const d=new Date();const p=n=>String(n).padStart(2,'0');$('clock').textContent=p(d.getDate())+'.'+p(d.getMonth()+1)+'.'+d.getFullYear()+', '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds())}
-tick();setInterval(tick,1000);applyLang();if(!SR) $('hint').textContent=t().noSR;
+if(SR){rec=new SR();rec.lang='ru-RU';rec.onresult=e=>{let txt=e.results[0][0].transcript;let sum=parseAmount(txt);if(sum>0){addItem(sum,$('cat').value);$('hint').textContent='Добавлено: '+fmt(sum)+' ('+txt+')';}else{$('hint').textContent='Не понял: '+txt;}};rec.onend=()=>{$('mic').classList.remove('rec');$('mic').textContent='🎤 Голос';};$('mic').onclick=()=>{if($('mic').classList.contains('rec')){rec.stop();return;}$('mic').classList.add('rec');$('mic').textContent='⏹ Слушаю...';rec.start();};}
+function tick(){let d=new Date();let p=n=>String(n).padStart(2,'0');$('clock').textContent=p(d.getDate())+'.'+p(d.getMonth()+1)+'.'+d.getFullYear()+', '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());}
+tick();setInterval(tick,1000);
+let sel=$('cat');sel.innerHTML=CATS.map(c=>'<option value="'+c+'">'+(ICONS[c]||'')+' '+(NAMES[c]||c)+'</option>').join('');
+render();
 </script>
 </body>
 </html>
