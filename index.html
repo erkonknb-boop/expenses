@@ -9,7 +9,7 @@
 <title>Expenses</title>
 <style>
   * { box-sizing: border-box; }
-  body { font-family: -apple-system, Helvetica, Arial, sans-serif; margin: 0; padding: 16px; padding-top: calc(16px + env(safe-area-inset-top)); background: #f2f2f7; color: #111; }
+  body { font-family: -apple-system, Helvetica, Arial, sans-serif; margin: 0; padding: 16px; padding-top: calc(16px + env(safe-area-inset-top)); padding-bottom: calc(24px + env(safe-area-inset-bottom)); background: #f2f2f7; color: #111; }
   .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
   h1 { font-size: 24px; margin: 0; }
   .card { background: #fff; border-radius: 14px; padding: 14px; margin-bottom: 14px; }
@@ -29,6 +29,7 @@
   .month { font-size: 16px; font-weight: 600; text-align: right; margin-top: 6px; color: #666; }
   button.del { background: #ff3b30; color: #fff; font-size: 13px; padding: 6px 10px; border-radius: 8px; }
   .hint { color: #666; font-size: 14px; margin: 6px 0 0; }
+  .author { text-align: center; color: #8e8e93; font-size: 13px; margin: 8px 0 0; }
   .langmenu { display: none; position: absolute; right: 16px; top: calc(52px + env(safe-area-inset-top)); background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.2); overflow: hidden; z-index: 10; }
   .langmenu button { display: block; width: 100%; background: #fff; color: #111; border-radius: 0; border-bottom: 1px solid #eee; text-align: left; }
 </style>
@@ -40,9 +41,9 @@
   <button class="lang" id="langBtn">🌐</button>
 </div>
 <div class="langmenu" id="langMenu">
-  <button data-l="ru">Русский</button>
-  <button data-l="kk">Қазақша</button>
-  <button data-l="zh">中文</button>
+  <button data-l="ru">🇷🇺 Русский</button>
+  <button data-l="kk">🇰🇿 Қазақша</button>
+  <button data-l="zh">🇨🇳 中文</button>
 </div>
 
 <div class="card">
@@ -75,12 +76,17 @@
   <input type="file" id="fileIn" accept=".json,application/json" style="display:none">
 </div>
 
+<p class="author" id="author"></p>
+
 <script>
 const KEY = 'expenses_v2';
 const OLD_KEY = 'expenses_v1';
 
+// ---------- Категории и значки ----------
+const CATS = ['food','transport','fuel','cafe','home','phone','health','pharmacy','clothes','fun','cinema','sport','gifts','education','subs','beauty','kids','pets','travel','taxes','other'];
+const ICONS = { food:'🛒', transport:'🚗', fuel:'⛽', cafe:'🍽️', home:'🏠', phone:'📱', health:'🩺', pharmacy:'💊', clothes:'👕', fun:'🎮', cinema:'🎬', sport:'🏋️', gifts:'🎁', education:'📚', subs:'🔁', beauty:'💄', kids:'🧸', pets:'🐾', travel:'✈️', taxes:'🧾', other:'📦' };
+
 // ---------- Языки ----------
-const CATS = ['food','transport','cafe','home','phone','health','clothes','fun','other'];
 const T = {
   ru: {
     title: 'Расходы, ₸', voice: '🎤 Голос', stop: '⏹ Слушаю...',
@@ -92,7 +98,8 @@ const T = {
     micErr: 'Ошибка микрофона. Проверь разрешение в Safari.', noSR: 'Голосовой ввод не поддерживается, используй ручной.',
     exp: 'Сохранить копию', imp: 'Восстановить из файла',
     impOk: 'Восстановлено трат:', impBad: 'Не удалось прочитать файл.', impAsk: 'Заменить текущие траты данными из файла?',
-    cats: { food:'Продукты', transport:'Транспорт', cafe:'Кафе и рестораны', home:'Жильё', phone:'Связь', health:'Здоровье', clothes:'Одежда', fun:'Развлечения', other:'Прочее' },
+    author: 'Разработчик: Дуйсембаев Ернат',
+    cats: { food:'Продукты', transport:'Транспорт', fuel:'Заправка', cafe:'Кафе и рестораны', home:'Жильё', phone:'Связь', health:'Здоровье', pharmacy:'Аптека', clothes:'Одежда', fun:'Развлечения', cinema:'Кино', sport:'Спорт', gifts:'Подарки', education:'Образование', subs:'Подписки', beauty:'Красота и уход', kids:'Дети', pets:'Питомцы', travel:'Путешествия', taxes:'Налоги и платежи', other:'Прочее' },
     sr: 'ru-RU', loc: 'ru-RU'
   },
   kk: {
@@ -105,7 +112,8 @@ const T = {
     micErr: 'Микрофон қатесі. Safari-де рұқсатты тексеріңіз.', noSR: 'Дауыспен енгізу қолдау таппайды, қолмен енгізіңіз.',
     exp: 'Көшірмені сақтау', imp: 'Файлдан қалпына келтіру',
     impOk: 'Қалпына келтірілді:', impBad: 'Файлды оқу мүмкін болмады.', impAsk: 'Ағымдағы шығындарды файлдағымен алмастырасыз ба?',
-    cats: { food:'Тағам', transport:'Көлік', cafe:'Кафе және ресторан', home:'Өмір сүру', phone:'Байланыс', health:'Денсаулық', clothes:'Киім', fun:'Демалыс', other:'Басқа' },
+    author: 'Әзірлеуші: Дуйсембаев Ернат',
+    cats: { food:'Тағам', transport:'Көлік', fuel:'Жанармай', cafe:'Кафе және ресторан', home:'Өмір сүру', phone:'Байланыс', health:'Денсаулық', pharmacy:'Дәріхана', clothes:'Киім', fun:'Демалыс', cinema:'Кино', sport:'Спорт', gifts:'Сыйлықтар', education:'Білім', subs:'Жазылымдар', beauty:'Сұлулық және күтім', kids:'Балалар', pets:'Үй жануарлары', travel:'Саяхат', taxes:'Салықтар және төлемдер', other:'Басқа' },
     sr: 'kk-KZ', loc: 'kk-KZ'
   },
   zh: {
@@ -118,7 +126,8 @@ const T = {
     micErr: '麦克风错误。请检查 Safari 的权限。', noSR: '不支持语音输入，请手动输入。',
     exp: '保存备份', imp: '从文件恢复',
     impOk: '已恢复笔数：', impBad: '无法读取文件。', impAsk: '用文件中的数据替换当前支出吗？',
-    cats: { food:'食品', transport:'交通', cafe:'餐厅', home:'住房', phone:'通讯', health:'健康', clothes:'服装', fun:'娱乐', other:'其他' },
+    author: '开发者：Duisembayev Yernat',
+    cats: { food:'食品', transport:'交通', fuel:'加油', cafe:'餐厅', home:'住房', phone:'通讯', health:'健康', pharmacy:'药店', clothes:'服装', fun:'娱乐', cinema:'电影', sport:'运动', gifts:'礼物', education:'教育', subs:'订阅', beauty:'美容护理', kids:'孩子', pets:'宠物', travel:'旅行', taxes:'税费和缴费', other:'其他' },
     sr: 'zh-CN', loc: 'zh-CN'
   }
 };
@@ -126,6 +135,7 @@ const T = {
 let lang = localStorage.getItem('lang') || 'ru';
 const $ = id => document.getElementById(id);
 const t = () => T[lang];
+const catName = c => (ICONS[c] || '') + ' ' + (t().cats[c] || c);
 
 // ---------- Данные ----------
 let items = load();
@@ -157,7 +167,7 @@ function applyLang() {
   const L = t();
   document.documentElement.lang = lang;
   $('title').textContent = L.title;
-  $('langBtn').textContent = '🌐 ' + ({ru:'Рус', kk:'Қаз', zh:'中文'})[lang];
+  $('langBtn').textContent = ({ru:'🇷🇺 Рус', kk:'🇰🇿 Қаз', zh:'🇨🇳 中文'})[lang];
   $('mic').textContent = $('mic').classList.contains('rec') ? L.stop : L.voice;
   $('hint').textContent = L.hint;
   $('amount').placeholder = L.amount;
@@ -167,8 +177,9 @@ function applyLang() {
   $('thSum').textContent = L.sum;
   $('exportBtn').textContent = '💾 ' + L.exp;
   $('importBtn').textContent = '📂 ' + L.imp;
+  $('author').textContent = L.author;
   const sel = $('cat'), cur = sel.value || 'food';
-  sel.innerHTML = CATS.map(c => '<option value="' + c + '">' + L.cats[c] + '</option>').join('');
+  sel.innerHTML = CATS.map(c => '<option value="' + c + '">' + catName(c) + '</option>').join('');
   sel.value = cur;
   if (rec) rec.lang = L.sr;
   render();
@@ -186,7 +197,7 @@ function render() {
     const d = new Date(it.ts);
     if (d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) month += it.sum;
     const tr = document.createElement('tr');
-    tr.innerHTML = '<td class="dt">' + fmtDate(it.ts) + '</td><td>' + (L.cats[it.cat] || it.cat) + '</td><td class="sum">' + fmtSum(it.sum) + '</td><td><button class="del" data-i="' + i + '">' + L.del + '</button></td>';
+    tr.innerHTML = '<td class="dt">' + fmtDate(it.ts) + '</td><td>' + catName(it.cat) + '</td><td class="sum">' + fmtSum(it.sum) + '</td><td><button class="del" data-i="' + i + '">' + L.del + '</button></td>';
     tbody.appendChild(tr);
   }
   $('month').textContent = L.month + ': ' + fmtSum(month);
