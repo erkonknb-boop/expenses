@@ -3,198 +3,503 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Expenses">
 <meta name="theme-color" content="#000000">
-<title>Expenses Alpin v5</title>
+<title>Expenses v0.2</title>
 <style>
-*{box-sizing:border-box}html{background:#000}
-body{font-family:-apple-system,Helvetica,Arial,sans-serif;margin:0;padding:16px;min-height:100vh;color:#fff;background:radial-gradient(circle at 20% 10%,rgba(120,20,45,.25),transparent 40%),radial-gradient(circle at 80% 60%,rgba(40,60,120,.18),transparent 45%),#050507}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;position:relative}
-h1{font-size:24px;margin:0;color:#a3263f;font-weight:700}
-.card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(20px);border-radius:22px;padding:14px;margin-bottom:14px}
-button{font-size:17px;border:0;border-radius:16px;padding:12px 16px;color:#fff;background:linear-gradient(180deg,#8a1f38,#5e1426);font-family:inherit;cursor:pointer}
-.topright{display:flex;align-items:center;gap:8px}
-.brand{position:relative;display:flex;align-items:center;gap:8px;font-size:16px;font-weight:700;padding:9px 16px;border-radius:16px;background:linear-gradient(180deg,#8a1f38,#5e1426);overflow:hidden}
-.brand::after{content:'';position:absolute;top:-50%;left:-30%;width:40%;height:200%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.6),transparent);transform:rotate(15deg);animation:shine 2.2s infinite}
-@keyframes shine{0%{left:-40%}100%{left:130%}}
-button.globe{font-size:20px;padding:9px 12px;border-radius:16px}
-button.globe.spin{animation:spin 0.8s}
-@keyframes spin{to{transform:rotate(360deg)}}
-.langmenu{display:none;position:absolute;right:0;top:52px;background:rgba(30,30,34,.96);border:1px solid rgba(255,255,255,.1);border-radius:16px;z-index:20;min-width:160px}
-.langmenu button{display:block;width:100%;background:transparent;text-align:left;padding:12px}
-.langmenu .flag{display:inline-block;animation:wind 1.8s infinite}
-@keyframes wind{50%{transform:skewX(-5deg)}}
-.micwrap{background:rgba(255,255,255,.08);border-radius:18px;padding:14px;text-align:center}
-button.mic{padding:12px 26px;font-size:20px;border-radius:22px}
-button.mic.rec{background:#ff3b30}
-button.gray{background:linear-gradient(180deg,#7a1b32,#4d1020);font-size:16px;padding:14px 12px}
-input,select{font-size:17px;padding:12px;width:100%;margin-bottom:8px;color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);border-radius:14px}
-.row{display:flex;gap:8px}.row>*{flex:1}
-table{width:100%;border-collapse:collapse}th,td{padding:10px 4px;border-bottom:1px solid rgba(163,38,63,.45);font-size:14px}
-.total{font-size:26px;font-weight:800;text-align:right;margin-top:10px}.total span{color:#a3263f}
-.month{text-align:right;color:rgba(255,255,255,.7);margin-top:8px}
-button.del{font-size:13px;padding:6px 10px}
-.hint{color:rgba(255,255,255,.7);font-size:14px;margin-top:8px}
-.author{text-align:center;color:rgba(255,255,255,.5);font-size:13px;margin-top:10px}
-.clock{text-align:center;color:rgba(255,255,255,.6);margin:10px 0}
-.arch-row{display:flex;justify-content:space-between;padding:10px 4px;border-bottom:1px solid rgba(255,255,255,.15)}
-button.info{width:36px;height:36px;border-radius:50%;font-weight:800;background:rgba(255,255,255,.15)}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:99;align-items:center;justify-content:center;padding:20px}
-.modal.open{display:flex}
-.modalbox{background:#1c1c22;border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:20px;max-width:400px;width:100%}
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { background: #000; }
+  body {
+    font-family: -apple-system, Helvetica, Arial, sans-serif;
+    margin: 0; padding: 16px;
+    padding-top: calc(16px + env(safe-area-inset-top));
+    padding-bottom: calc(24px + env(safe-area-inset-bottom));
+    min-height: 100vh;
+    color: #fff;
+    background:
+      radial-gradient(circle at 20% 10%, rgba(120,20,45,.25), transparent 40%),
+      radial-gradient(circle at 80% 60%, rgba(40,60,120,.18), transparent 45%),
+      #050507;
+    background-attachment: fixed;
+  }
+  .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; position: relative; }
+  h1 { font-size: 24px; margin: 0; color: #a3263f; font-weight: 700; }
+  .card {
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.08);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border-radius: 22px;
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+  button {
+    font-size: 17px; border: 0; border-radius: 16px; padding: 12px 16px; color: #fff;
+    background: linear-gradient(180deg, #8a1f38, #5e1426);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 2px 8px rgba(0,0,0,.4);
+    font-family: inherit;
+  }
+  button:active { opacity: .8; }
+  button.lang {
+    font-size: 16px; font-weight: 600; padding: 9px 16px; border-radius: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  button.lang svg { width: 22px; height: 22px; }
+  .topright { display: flex; align-items: center; gap: 8px; }
+  button.brand { cursor: default; position: relative; overflow: hidden; isolation: isolate; }
+  button.brand::after{
+    content:''; position:absolute; top:-50%; left:-30%; width:40%; height:200%;
+    background: linear-gradient(120deg,transparent 0%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.6) 70%,transparent 100%);
+    transform: rotate(15deg); animation: shine 2.2s infinite; z-index:1;
+  }
+  button.brand span, button.brand svg{ position:relative; z-index:2; }
+  @keyframes shine{0%{left:-40%}60%{left:130%}100%{left:130%}}
+  button.globe { font-size: 20px; padding: 9px 12px; border-radius: 16px; line-height: 1; }
+  button.globe.spin{ animation: spin 0.8s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes spin{0%{transform:rotate(0deg) scale(1)}30%{transform:rotate(180deg) scale(1.15)}100%{transform:rotate(360deg) scale(1)}}
+  button.info{ width:38px; height:38px; padding:0; border-radius:50%; font-size:18px; font-weight:800; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; }
+  .micwrap { background: rgba(255,255,255,.08); border-radius: 18px; padding: 14px; text-align: center; }
+  button.mic { padding: 12px 26px; font-size: 20px; border-radius: 22px; display: inline-flex; align-items: center; gap: 10px; }
+  button.mic.rec { background: linear-gradient(180deg, #ff3b30, #b3170f); }
+  button.gray {
+    background: linear-gradient(180deg, #7a1b32, #4d1020);
+    font-size: 16px; padding: 14px 12px; border-radius: 16px;
+  }
+  button.add { font-size: 19px; }
+  input, select {
+    font-size: 17px; padding: 12px; width: 100%; margin-bottom: 8px;
+    color: #fff; font-family: inherit;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 14px;
+    outline: none;
+  }
+  input::placeholder { color: rgba(255,255,255,.5); }
+  select option { color: #000; }
+  .row { display: flex; gap: 8px; }
+  .row > * { flex: 1; }
+  .row select { margin-bottom: 0; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 10px 4px; border-bottom: 1px solid rgba(163,38,63,.45); font-size: 14px; vertical-align: middle; }
+  th { color: rgba(255,255,255,.6); font-weight: 600; font-size: 15px; }
+  th:first-child { color: #fff; }
+  td.sum, th.sum { text-align: right; white-space: nowrap; }
+  td.dt { white-space: nowrap; font-size: 13px; color: #fff; }
+  .total { font-size: 26px; font-weight: 800; text-align: right; margin-top: 10px; }
+  .total span { color: #8a1f38; }
+  .month { font-size: 17px; font-weight: 600; text-align: right; margin-top: 8px; color: rgba(255,255,255,.7); }
+  .month span { color: #8a1f38; }
+  button.del { font-size: 14px; padding: 7px 12px; border-radius: 12px; }
+  .hint { color: rgba(255,255,255,.75); font-size: 15px; margin: 10px 0 0; }
+  .author { text-align: center; color: rgba(255,255,255,.55); font-size: 14px; margin: 10px 0 0; }
+  .author a { color: rgba(255,255,255,.55); }
+  .footer-ver{ display:flex; justify-content:space-between; align-items:center; margin-top:12px; gap:8px; }
+  .ver{ font-size:12px; color:rgba(255,255,255,.4); border:1px solid rgba(255,255,255,.12); padding:4px 10px; border-radius:20px; background:rgba(255,255,255,.06); }
+  .langmenu {
+    display: none; position: absolute; right: 0; top: 52px;
+    background: rgba(30,30,34,.95);
+    -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,.6);
+    overflow: hidden; z-index: 10;
+  }
+  .langmenu button { display: block; width: 100%; background: transparent; box-shadow: none; color: #fff; border-radius: 0; border-bottom: 1px solid rgba(255,255,255,.08); text-align: left; }
+  .langmenu button .flag{ display:inline-block; animation: wind 1.8s ease-in-out infinite; transform-origin:0% 50%; }
+  @keyframes wind{0%,100%{transform:skewX(0deg) translateX(0)}25%{transform:skewX(-6deg) translateX(1px)}50%{transform:skewX(4deg) translateX(-1px)}75%{transform:skewX(-3deg)}}
+  .clock { text-align: center; font-size: 18px; font-weight: 600; color: rgba(255,255,255,.7); margin: 0 0 14px; font-variant-numeric: tabular-nums; }
+  .arch-row { display: flex; justify-content: space-between; padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,.15); font-size: 16px; }
+  .arch-row b { font-variant-numeric: tabular-nums; color: #a3263f; }
+  .arch-title { font-size: 18px; font-weight: 700; margin: 0 0 8px; }
+  .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:100;align-items:center;justify-content:center;padding:20px}
+  .modal.open{display:flex}
+  .modalbox{background:linear-gradient(180deg,#1c1c22,#101014);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:20px;max-width:420px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.6)}
+  .modalbox h3{margin:0 0 10px;font-size:18px;color:#fff}
+  .modalbox p{font-size:14px;line-height:1.5;color:rgba(255,255,255,.75);margin:8px 0}
+  .modalbox .ok{width:100%;margin-top:12px}
 </style>
 </head>
 <body>
 <div class="top">
-<h1>Расходы, ₸</h1>
-<div class="topright">
-<div class="brand"><svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M1 20 L9 6 L14 14 L16.5 10 L23 20 Z"/></svg><span>Alpin</span></div>
-<button class="globe" id="langBtn">🌐</button>
-<button class="info" id="infoBtn">i</button>
+  <h1 id="title"></h1>
+  <div class="topright">
+    <button class="lang brand" id="brandBtn"></button>
+    <button class="globe" id="langBtn">🌐</button>
+    <button class="info" id="infoBtn">i</button>
+  </div>
+  <div class="langmenu" id="langMenu">
+    <button data-l="ru"><span class="flag">🇷🇺</span> Русский</button>
+    <button data-l="kk"><span class="flag">🇰🇿</span> Қазақша</button>
+    <button data-l="zh"><span class="flag">🇨🇳</span> 中文</button>
+  </div>
 </div>
-<div class="langmenu" id="langMenu">
-<button data-l="ru"><span class="flag">🇷🇺</span> Русский</button>
-<button data-l="kk"><span class="flag">🇰🇿</span> Қазақша</button>
-<button data-l="zh"><span class="flag">🇨🇳</span> 中文</button>
+<div class="card">
+  <div class="micwrap">
+    <button class="mic" id="mic"></button>
+  </div>
+  <p class="hint" id="hint"></p>
 </div>
+<div class="card">
+  <input id="amount" type="number" inputmode="numeric">
+  <div class="row">
+    <select id="cat"></select>
+    <button class="add" id="add"></button>
+  </div>
 </div>
-
-<div class="card"><div class="micwrap"><button class="mic" id="mic">🎤 Голос</button></div><p class="hint" id="hint">Скажи сумму</p></div>
-<div class="card"><input id="amount" type="number" inputmode="numeric" placeholder="Сумма в тенге"><div class="row"><select id="cat"></select><button class="add" id="add">Добавить</button></div></div>
 <div class="clock" id="clock"></div>
-<div class="card"><table><thead><tr><th>Дата и время</th><th>Категория</th><th style="text-align:right">Сумма</th><th></th></tr></thead><tbody id="rows"></tbody></table><div class="month" id="month"></div><div class="total" id="total"></div></div>
-<div class="card"><p>📅 Архив</p><div id="archive"></div></div>
-<div class="card"><div class="row"><button class="gray" id="exportBtn">💾 Сохранить</button><button class="gray" id="importBtn">📂 Восстановить</button></div><input type="file" id="fileIn" style="display:none"></div>
-<p class="author">Разработчик: Дуйсембаев Ернат — Instagram @duisembaev_16</p>
+<div class="card">
+  <table>
+    <thead><tr><th id="thDate"></th><th id="thCat"></th><th class="sum" id="thSum"></th><th></th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <div class="month" id="month"></div>
+  <div class="total" id="total"></div>
+</div>
+<div class="card">
+  <p class="arch-title" id="archTitle"></p>
+  <div id="archive"></div>
+</div>
+<div class="card">
+  <div class="row">
+    <button class="gray" id="exportBtn"></button>
+    <button class="gray" id="importBtn"></button>
+  </div>
+  <input type="file" id="fileIn" accept=".json,application/json" style="display:none">
+</div>
 
-<div class="modal" id="infoModal"><div class="modalbox"><h3>🔒 Приватность</h3><p>Этот сайт НЕ хранит ваши данные на сервере. Все расходы остаются только на вашем телефоне в браузере.</p><p>Никакой регистрации. Я не вижу ваши траты.</p><p>Используйте «Сохранить копию» чтобы перенести на другой телефон.</p><button id="infoOk" style="width:100%;margin-top:10px">OK</button></div></div>
+<div class="footer-ver">
+  <span class="ver">v0.2</span>
+  <div style="text-align:center">
+    <p class="author" id="author" style="margin:0"></p>
+    <p class="author" style="margin:4px 0 0"><a href="https://instagram.com/duisembaev_16" target="_blank" rel="noopener">📷 Instagram: @duisembaev_16</a></p>
+  </div>
+  <span class="ver">v0.2</span>
+</div>
+
+<div class="modal" id="infoModal">
+<div class="modalbox">
+<h3 id="infoTitle"></h3>
+<p id="infoText1"></p>
+<p id="infoText2"></p>
+<p id="infoText3"></p>
+<button class="ok" id="infoOk">OK</button>
+</div>
+</div>
 
 <script>
-// ФИКС КАТЕГОРИЙ - маппим старые русские названия
-const CAT_MAP = {
- 'Продукты':'food','Еда':'food','продукты':'food',
- 'Транспорт':'transport','транспорт':'transport',
- 'Заправка':'fuel','Топливо':'fuel','заправка':'fuel',
- 'Кафе и рестораны':'cafe','Кафе':'cafe','Рестораны':'cafe',
- 'Жильё':'home','Жилье':'home','Дом':'home',
- 'Связь':'phone','Телефон':'phone',
- 'Здоровье':'health','здоровье':'health',
- 'Аптека':'pharmacy','аптека':'pharmacy',
- 'Одежда':'clothes','одежда':'clothes',
- 'Развлечения':'fun','развлечения':'fun',
- 'Кино':'cinema','кино':'cinema',
- 'Спорт':'sport','спорт':'sport',
- 'Подарки':'gifts','подарки':'gifts',
- 'Образование':'education','образование':'education',
- 'Подписки':'subs','подписки':'subs',
- 'Красота и уход':'beauty','Красота':'beauty',
- 'Дети':'kids','дети':'kids',
- 'Питомцы':'pets','питомцы':'pets',
- 'Путешествия':'travel','путешествия':'travel',
- 'Налоги и платежи':'taxes','Налоги':'taxes',
- 'Прочее':'other','прочее':'other','Другое':'other'
+const KEY = 'expenses_v2';
+const OLD_KEY = 'expenses_v1';
+const LOGO = '<svg viewBox="0 0 24 24" fill="#fff"><path d="M1 20 L9 6 L14 14 L16.5 10 L23 20 Z"/><path d="M9 6 L11.2 9.8 L9 8.6 L6.8 9.8 Z" fill="#8a1f38"/></svg>';
+const CATS = ['food','transport','fuel','cafe','home','phone','health','pharmacy','clothes','fun','cinema','sport','gifts','education','subs','beauty','kids','pets','travel','taxes','other'];
+const ICONS = { food:'🛒', transport:'🚗', fuel:'⛽', cafe:'🍽️', home:'🏠', phone:'📱', health:'🩺', pharmacy:'💊', clothes:'👕', fun:'🎮', cinema:'🎬', sport:'🏋️', gifts:'🎁', education:'📚', subs:'🔁', beauty:'💄', kids:'🧸', pets:'🐾', travel:'✈️', taxes:'🧾', other:'📦' };
+const T = {
+  ru: {
+    title: 'Расходы, ₸', voice: '🎤 Голос', stop: '⏹ Слушаю...',
+    hint: 'Скажи только сумму, например «тысяча тенге».',
+    amount: 'Сумма в тенге', add: 'Добавить',
+    date: 'Дата и время', cat: 'Категория', sum: 'Сумма', total: 'Итого', month: 'За месяц',
+    archive: 'Архив по месяцам',
+    del: 'Удалить', confirm: 'Удалить эту трату?',
+    added: 'Добавлено', heard: 'услышано', nope: 'Не понял сумму', again: 'Попробуй ещё раз.',
+    micErr: 'Ошибка микрофона. Проверь разрешение в Safari.', noSR: 'Голосовой ввод не поддерживается, используй ручной.',
+    exp: 'Сохранить копию', imp: 'Восстановить из файла',
+    impOk: 'Восстановлено трат:', impBad: 'Не удалось прочитать файл.', impAsk: 'Заменить текущие траты данными из файла?',
+    author: 'Разработчик: Дуйсембаев Ернат',
+    infoTitle:'🔒 Приватность и данные',
+    info1:'Этот сайт НЕ хранит ваши расходы на сервере. Все данные остаются только на вашем телефоне / браузере в localStorage.',
+    info2:'Никакой регистрации, никаких паролей. Даже я, разработчик, не вижу сколько вы потратили.',
+    info3:'Хотите перенести на другой телефон? Используйте кнопки «Сохранить копию» и «Восстановить из файла». Если очистите кеш браузера — данные удалятся.',
+    cats: { food:'Продукты', transport:'Транспорт', fuel:'Заправка', cafe:'Кафе и рестораны', home:'Жильё', phone:'Связь', health:'Здоровье', pharmacy:'Аптека', clothes:'Одежда', fun:'Развлечения', cinema:'Кино', sport:'Спорт', gifts:'Подарки', education:'Образование', subs:'Подписки', beauty:'Красота и уход', kids:'Дети', pets:'Питомцы', travel:'Путешествия', taxes:'Налоги и платежи', other:'Прочее' },
+    sr: 'ru-RU', loc: 'ru-RU'
+  },
+  kk: {
+    title: 'Шығындар, ₸', voice: '🎤 Дауыс', stop: '⏹ Тыңдап тұрмын...',
+    hint: 'Тек соманы айтыңыз, мысалы «мың теңге».',
+    amount: 'Сома (теңге)', add: 'Қосу',
+    date: 'Күні мен уақыты', cat: 'Санат', sum: 'Сома', total: 'Жалпы', month: 'Айға',
+    archive: 'Айлар бойынша архив',
+    del: 'Жою', confirm: 'Бұл шығынды жоя саласыз ба?',
+    added: 'Қосылды', heard: 'естілді', nope: 'Соманы түсінбедім', again: 'Тағы бір рет айтыңыз.',
+    micErr: 'Микрофон қатесі. Safari-де рұқсатты тексеріңіз.', noSR: 'Дауыспен енгізу қолдау таппайды, қолмен енгізіңіз.',
+    exp: 'Көшірмені сақтау', imp: 'Файлдан қалпына келтіру',
+    impOk: 'Қалпына келтірілді:', impBad: 'Файлды оқу мүмкін болмады.', impAsk: 'Ағымдағы шығындарды файлдағымен алмастырасыз ба?',
+    author: 'Әзірлеуші: Дуйсембаев Ернат',
+    infoTitle:'🔒 Құпиялылық',
+    info1:'Бұл сайт сіздің шығындарыңызды серверде сақтамайды. Барлығы тек телефоныңызда қалады.',
+    info2:'Тіркелу жоқ, пароль жоқ. Мен де көрмеймін.',
+    info3:'Басқа телефонға көшіру үшін «Көшірмені сақтау» батырмасын қолданыңыз.',
+    cats: { food:'Тағам', transport:'Көлік', fuel:'Жанармай', cafe:'Кафе және ресторан', home:'Өмір сүру', phone:'Байланыс', health:'Денсаулық', pharmacy:'Дәріхана', clothes:'Киім', fun:'Демалыс', cinema:'Кино', sport:'Спорт', gifts:'Сыйлықтар', education:'Білім', subs:'Жазылымдар', beauty:'Сұлулық және күтім', kids:'Балалар', pets:'Үй жануарлары', travel:'Саяхат', taxes:'Салықтар және төлемдер', other:'Басқа' },
+    sr: 'kk-KZ', loc: 'kk-KZ'
+  },
+  zh: {
+    title: '支出, ₸', voice: '🎤 语音', stop: '⏹ 正在听...',
+    hint: '只说金额，例如“一千坚戈”。',
+    amount: '金额（坚戈）', add: '添加',
+    date: '日期和时间', cat: '类别', sum: '金额', total: '合计', month: '本月',
+    archive: '按月归档',
+    del: '删除', confirm: '删除这笔支出吗？',
+    added: '已添加', heard: '听到', nope: '没听懂金额', again: '请再试一次。',
+    micErr: '麦克风错误。请检查 Safari 的权限。', noSR: '不支持语音输入，请手动输入。',
+    exp: '保存备份', imp: '从文件恢复',
+    impOk: '已恢复笔数：', impBad: '无法读取文件。', impAsk: '用文件中的数据替换当前支出吗？',
+    author: '开发者：Duisembayev Yernat',
+    infoTitle:'🔒 隐私',
+    info1:'本网站不会在服务器上保存您的支出。所有数据仅保存在您手机中。',
+    info2:'无需注册，我也看不到您的花费。',
+    info3:'想换手机请用“备份”按钮。',
+    cats: { food:'食品', transport:'交通', fuel:'加油', cafe:'餐厅', home:'住房', phone:'通讯', health:'健康', pharmacy:'药店', clothes:'服装', fun:'娱乐', cinema:'电影', sport:'运动', gifts:'礼物', education:'教育', subs:'订阅', beauty:'美容护理', kids:'孩子', pets:'宠物', travel:'旅行', taxes:'税费和缴费', other:'其他' },
+    sr: 'zh-CN', loc: 'zh-CN'
+  }
 };
-
-const CATS=['food','transport','fuel','cafe','home','phone','health','pharmacy','clothes','fun','cinema','sport','gifts','education','subs','beauty','kids','pets','travel','taxes','other'];
-const ICONS={food:'🛒',transport:'🚗',fuel:'⛽',cafe:'🍽️',home:'🏠',phone:'📱',health:'🩺',pharmacy:'💊',clothes:'👕',fun:'🎮',cinema:'🎬',sport:'🏋️',gifts:'🎁',education:'📚',subs:'🔁',beauty:'💄',kids:'🧸',pets:'🐾',travel:'✈️',taxes:'🧾',other:'📦'};
-const NAMES={food:'Продукты',transport:'Транспорт',fuel:'Заправка',cafe:'Кафе и рестораны',home:'Жильё',phone:'Связь',health:'Здоровье',pharmacy:'Аптека',clothes:'Одежда',fun:'Развлечения',cinema:'Кино',sport:'Спорт',gifts:'Подарки',education:'Образование',subs:'Подписки',beauty:'Красота и уход',kids:'Дети',pets:'Питомцы',travel:'Путешествия',taxes:'Налоги и платежи',other:'Прочее'};
-
-const $=id=>document.getElementById(id);
-const NEW_KEY='expenses_v2';
-const OLD_KEYS=['expenses','expenses_v1','expenses-data','qrc-expenses'];
-
-function normalizeCat(c){
- if(!c) return 'other';
- if(CATS.includes(c)) return c;
- if(CAT_MAP[c]) return CAT_MAP[c];
- return 'other';
+let lang = localStorage.getItem('lang') || 'ru';
+const $ = id => document.getElementById(id);
+const t = () => T[lang];
+const catName = c => (ICONS[c] || '') + ' ' + (t().cats[c] || c);
+let items = load();
+function load() {
+  let v = JSON.parse(localStorage.getItem(KEY) || 'null');
+  if (v) return v;
+  const old = JSON.parse(localStorage.getItem(OLD_KEY) || '[]');
+  const catMap = {'Продукты':'food','Транспорт':'transport','Кафе и рестораны':'cafe','Жильё':'home','Связь':'phone','Здоровье':'health','Одежда':'clothes','Развлечения':'fun','Прочее':'other'};
+  const year = new Date().getFullYear();
+  return old.map(o => ({ sum: o.sum, cat: catMap[o.cat] || 'other', ts: parseOldDate(o.date, year) }));
 }
-
-function load(){
- try{
-  let v=JSON.parse(localStorage.getItem(NEW_KEY)||'null');
-  if(v && v.length){
-   return v.map(o=>({sum:o.sum, cat:normalizeCat(o.cat), ts:o.ts||Date.now()}));
+function parseOldDate(s, year) {
+  const m = /^(\d{2})\.(\d{2})/.exec(s || '');
+  return m ? new Date(year, +m[2] - 1, +m[1], 12, 0).getTime() : Date.now();
+}
+function save() { localStorage.setItem(KEY, JSON.stringify(items)); }
+const fmtSum = n => n.toLocaleString('ru-RU') + ' ₸';
+const fmtSumHtml = n => '<span>' + n.toLocaleString('ru-RU') + ' ₸</span>';
+function fmtDate(ts) {
+  const d = new Date(ts);
+  const p = n => String(n).padStart(2, '0');
+  return p(d.getDate()) + '.' + p(d.getMonth() + 1) + '.' + d.getFullYear() + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+}
+function applyLang() {
+  const L = t();
+  document.documentElement.lang = lang;
+  $('title').textContent = L.title + ' v0.2';
+  $('brandBtn').innerHTML = LOGO + '<span>Alpin</span>';
+  $('mic').textContent = $('mic').classList.contains('rec') ? L.stop : L.voice;
+  $('hint').textContent = L.hint;
+  $('amount').placeholder = L.amount;
+  $('add').textContent = L.add;
+  $('thDate').textContent = L.date;
+  $('thCat').textContent = L.cat;
+  $('thSum').textContent = L.sum;
+  $('exportBtn').textContent = '💾 ' + L.exp;
+  $('importBtn').textContent = '📂 ' + L.imp;
+  $('author').textContent = L.author;
+  $('infoTitle').textContent = L.infoTitle;
+  $('infoText1').textContent = L.info1;
+  $('infoText2').textContent = L.info2;
+  $('infoText3').textContent = L.info3;
+  const sel = $('cat'), cur = sel.value || 'food';
+  sel.innerHTML = CATS.map(c => '<option value="' + c + '">' + catName(c) + '</option>').join('');
+  sel.value = cur;
+  if (rec) rec.lang = L.sr;
+  render();
+}
+function render() {
+  const L = t();
+  const tbody = $('rows');
+  tbody.innerHTML = '';
+  let total = 0, month = 0;
+  const now = new Date();
+  for (let i = items.length - 1; i >= 0; i--) {
+    const it = items[i];
+    total += it.sum;
+    const d = new Date(it.ts);
+    if (d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) month += it.sum;
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td class="dt">' + fmtDate(it.ts) + '</td><td>' + catName(it.cat) + '</td><td class="sum">' + fmtSum(it.sum) + '</td><td><button class="del" data-i="' + i + '">' + L.del + '</button></td>';
+    tbody.appendChild(tr);
   }
-  for(let k of OLD_KEYS){
-   let r=localStorage.getItem(k);
-   if(!r) continue;
-   let a=JSON.parse(r);
-   if(a && a.length){
-    let norm=a.map(o=>{
-     let cat = normalizeCat(o.cat||o.category||'other');
-     let ts = o.ts||o.time||Date.now();
-     if(o.date){ let d=Date.parse(o.date); if(!isNaN(d)) ts=d; }
-     return {sum:Number(o.sum)||0, cat:cat, ts:ts};
-    }).filter(o=>o.sum>0);
-    if(norm.length){ localStorage.setItem(NEW_KEY, JSON.stringify(norm)); return norm; }
-   }
+  $('month').innerHTML = L.month + ': ' + fmtSumHtml(month);
+  $('total').innerHTML = L.total + ': ' + fmtSumHtml(total);
+  renderArchive();
+}
+function renderArchive() {
+  const L = t();
+  $('archTitle').textContent = '📅 ' + L.archive;
+  const byMonth = {};
+  items.forEach(it => {
+    const d = new Date(it.ts);
+    const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+    byMonth[key] = (byMonth[key] || 0) + it.sum;
+  });
+  const keys = Object.keys(byMonth).sort().reverse();
+  $('archive').innerHTML = keys.map(k => {
+    const [y, m] = k.split('-');
+    const name = new Date(+y, +m - 1, 1).toLocaleDateString(L.loc, { month: 'long', year: 'numeric' });
+    return '<div class="arch-row"><span>' + name + '</span><b>' + fmtSum(byMonth[k]) + '</b></div>';
+  }).join('');
+}
+function addItem(sum, cat) {
+  if (!sum || sum <= 0) return;
+  items.push({ sum: Math.round(sum), cat: cat, ts: Date.now() });
+  save();
+  render();
+}
+$('add').onclick = () => {
+  const v = parseFloat($('amount').value);
+  addItem(v, $('cat').value);
+  $('amount').value = '';
+};
+$('rows').onclick = e => {
+  if (e.target.classList.contains('del')) {
+    if (confirm(t().confirm)) {
+      items.splice(parseInt(e.target.dataset.i), 1);
+      save();
+      render();
+    }
   }
- }catch(e){ console.error('load err',e); }
- return [];
+};
+$('langBtn').onclick = e => {
+  e.stopPropagation();
+  $('langBtn').classList.remove('spin'); void $('langBtn').offsetWidth; $('langBtn').classList.add('spin');
+  const m = $('langMenu');
+  m.style.display = m.style.display === 'block' ? 'none' : 'block';
+  setTimeout(()=>{$('langBtn').classList.remove('spin')},800);
+};
+document.addEventListener('click', () => { $('langMenu').style.display = 'none'; });
+$('langMenu').onclick = e => {
+  const l = e.target.closest('button')?.dataset.l || e.target.dataset.l;
+  if (l) { lang = l; localStorage.setItem('lang', l); applyLang(); }
+};
+$('exportBtn').onclick = () => {
+  const blob = new Blob([JSON.stringify(items, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  const d = new Date();
+  a.href = URL.createObjectURL(blob);
+  a.download = 'expenses-' + d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0') + '.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+};
+$('importBtn').onclick = () => $('fileIn').click();
+$('fileIn').onchange = e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const data = JSON.parse(r.result);
+      if (!Array.isArray(data)) throw 0;
+      const clean = data.filter(x => x && typeof x.sum === 'number' && x.ts).map(x => ({ sum: x.sum, cat: CATS.includes(x.cat) ? x.cat : 'other', ts: x.ts }));
+      if (confirm(t().impAsk)) {
+        items = clean;
+        save();
+        render();
+        alert(t().impOk + ' ' + clean.length);
+      }
+    } catch (err) { alert(t().impBad); }
+    e.target.value = '';
+  };
+  r.readAsText(f);
+};
+$('infoBtn').onclick=()=>{$('infoModal').classList.add('open')};
+$('infoOk').onclick=()=>{$('infoModal').classList.remove('open')};
+$('infoModal').onclick=e=>{if(e.target.id==='infoModal') e.currentTarget.classList.remove('open')};
+function parseRu(text) {
+  const units = { ноль:0, один:1, одна:1, одну:1, два:2, две:2, три:3, четыре:4, пять:5, шесть:6, семь:7, восемь:8, девять:9, десять:10, одиннадцать:11, двенадцать:12, тринадцать:13, четырнадцать:14, пятнадцать:15, шестнадцать:16, семнадцать:17, восемнадцать:18, девятнадцать:19, двадцать:20, тридцать:30, сорок:40, пятьдесят:50, шестьдесят:60, семьдесят:70, восемьдесят:80, девяносто:90, сто:100, двести:200, триста:300, четыреста:400, пятьсот:500, шестьсот:600, семьсот:700, восемьсот:800, девятьсот:900, полтора:1.5, полторы:1.5 };
+  let total = 0, cur = 0, found = false;
+  text.split(/\s+/).forEach(w => {
+    if (w in units) { cur += units[w]; found = true; }
+    else if (/^(тысяч|тыс|тыщ)/.test(w)) { total += (cur || 1) * 1000; cur = 0; found = true; }
+    else if (/^(миллион|млн|лям)/.test(w)) { total += (cur || 1) * 1000000; cur = 0; found = true; }
+    else if (/^\d+$/.test(w)) { cur += parseInt(w); found = true; }
+  });
+  total += cur;
+  return found ? Math.round(total) : 0;
 }
-let items=load();
-
-function save(){ localStorage.setItem(NEW_KEY, JSON.stringify(items)); }
-function fmt(n){ return n.toLocaleString('ru-RU')+' ₸'; }
-function fmtDate(ts){ let d=new Date(ts); let p=n=>String(n).padStart(2,'0'); return p(d.getDate())+'.'+p(d.getMonth()+1)+'.'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes()); }
-
-function render(){
- try{
-  let tbody=$('rows'); tbody.innerHTML='';
-  let total=0, month=0; let now=new Date();
-  for(let i=items.length-1;i>=0;i--){
-   let it=items[i]; total+=it.sum;
-   let d=new Date(it.ts); if(d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear()) month+=it.sum;
-   let catKey = normalizeCat(it.cat);
-   let tr=document.createElement('tr');
-   tr.innerHTML='<td style="font-size:13px">'+fmtDate(it.ts)+'</td><td>'+(ICONS[catKey]||'')+' '+(NAMES[catKey]||catKey)+'</td><td style="text-align:right">'+fmt(it.sum)+'</td><td><button class="del" data-i="'+i+'">Удалить</button></td>';
-   tbody.appendChild(tr);
+function parseKk(text) {
+  const units = { бір:1, екі:2, үш:3, төрт:4, бес:5, алты:6, жеті:7, сегіз:8, тоғыз:9, он:10, жиырма:20, отыз:30, қырық:40, елу:50, алпыс:60, жетпіс:70, сексен:80, тоқсан:90, жүз:100 };
+  let total = 0, cur = 0, found = false;
+  text.split(/\s+/).forEach(w => {
+    if (w in units) {
+      if (w === 'жүз') { cur = (cur || 1) * 100; } else { cur += units[w]; }
+      found = true;
+    }
+    else if (/^мың/.test(w) || /^мын/.test(w)) { total += (cur || 1) * 1000; cur = 0; found = true; }
+    else if (/^миллион/.test(w)) { total += (cur || 1) * 1000000; cur = 0; found = true; }
+    else if (/^\d+$/.test(w)) { cur += parseInt(w); found = true; }
+  });
+  total += cur;
+  return found ? total : 0;
+}
+function parseZh(text) {
+  const d = { '零':0,'一':1,'二':2,'两':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9 };
+  const arabic = text.replace(/\s/g, '').match(/\d+/);
+  if (arabic) {
+    let n = parseInt(arabic[0]);
+    if (/万/.test(text) && n < 10000) n *= 10000;
+    else if (/千/.test(text) && n < 1000) n *= 1000;
+    return n;
   }
-  $('month').textContent='За месяц: '+fmt(month);
-  $('total').innerHTML='Итого: <span style="color:#a3263f">'+fmt(total)+'</span>';
-  let by={}; items.forEach(it=>{ let d=new Date(it.ts); let k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); by[k]=(by[k]||0)+it.sum; });
-  let keys=Object.keys(by).sort().reverse();
-  $('archive').innerHTML=keys.map(k=>'<div class="arch-row"><span>'+k+'</span><b style="color:#a3263f">'+fmt(by[k])+'</b></div>').join('');
- }catch(e){ console.error('render err',e); alert('Ошибка рендера: '+e.message); }
+  let total = 0, section = 0, num = 0, found = false;
+  for (const ch of text) {
+    if (ch in d) { num = d[ch]; found = true; }
+    else if (ch === '十') { section += (num || 1) * 10; num = 0; found = true; }
+    else if (ch === '百') { section += (num || 1) * 100; num = 0; found = true; }
+    else if (ch === '千') { section += (num || 1) * 1000; num = 0; found = true; }
+    else if (ch === '万') { total += (section + num || 1) * 10000; section = 0; num = 0; found = true; }
+  }
+  total += section + num;
+  return found ? total : 0;
 }
-
-function addItem(sum,cat){
- console.log('addItem',sum,cat);
- if(!sum || isNaN(sum) || sum<=0){ alert('Введи сумму больше 0'); return; }
- items.push({sum:Math.round(sum), cat:normalizeCat(cat), ts:Date.now()});
- save(); render();
- $('amount').value='';
+function parseAmount(text) {
+  text = text.toLowerCase().replace(/ё/g, 'е');
+  text = text.replace(/(\d)[\s,]+(?=\d)/g, '$1');
+  const m = text.match(/(\d+(?:[.,]\d+)?)\s*(тыс|тыщ|мың|мын|млн|миллион|лям|к(?![\p{L}])|k(?![\p{L}]))?/u);
+  if (lang !== 'zh' && m) {
+    let n = parseFloat(m[1].replace(',', '.'));
+    if (m[2]) n *= /^(млн|миллион|лям)/.test(m[2]) ? 1000000 : 1000;
+    return Math.round(n);
+  }
+  if (lang === 'ru') return parseRu(text);
+  if (lang === 'kk') return parseKk(text);
+  return parseZh(text);
 }
-
-$('add').onclick=()=>{ let v=parseFloat($('amount').value); console.log('add click',v); addItem(v, $('cat').value); };
-$('rows').onclick=e=>{ if(e.target.classList.contains('del')){ if(confirm('Удалить?')){ items.splice(parseInt(e.target.dataset.i),1); save(); render(); } } };
-$('langBtn').onclick=e=>{ e.stopPropagation(); $('langBtn').classList.remove('spin'); void $('langBtn').offsetWidth; $('langBtn').classList.add('spin'); let m=$('langMenu'); m.style.display=m.style.display==='block'?'none':'block'; setTimeout(()=>$('langBtn').classList.remove('spin'),800); };
-document.addEventListener('click',()=>{ $('langMenu').style.display='none'; });
-$('exportBtn').onclick=()=>{ let b=new Blob([JSON.stringify(items,null,2)],{type:'application/json'}); let a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='expenses.json'; a.click(); };
-$('importBtn').onclick=()=>$('fileIn').click();
-$('fileIn').onchange=e=>{ let f=e.target.files[0]; if(!f) return; let r=new FileReader(); r.onload=()=>{ try{ let d=JSON.parse(r.result); if(Array.isArray(d)){ items=d.map(o=>({sum:o.sum, cat:normalizeCat(o.cat), ts:o.ts||Date.now()})); save(); render(); alert('Восстановлено '+d.length); } }catch(err){ alert('Ошибка файла'); } }; r.readAsText(f); };
-$('infoBtn').onclick=()=>$('infoModal').classList.add('open'); $('infoOk').onclick=()=>$('infoModal').classList.remove('open'); $('infoModal').onclick=e=>{ if(e.target.id==='infoModal') e.currentTarget.classList.remove('open'); };
-
-function parseAmount(t){ t=t.toLowerCase().replace(/,/g,''); let m=t.match(/(\d+(\.\d+)?)/); if(m) return parseInt(m[1],10); return 0; }
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-let rec=null;
-if(SR){
- rec=new SR(); rec.lang='ru-RU';
- rec.onresult=e=>{ let txt=e.results[0][0].transcript; let sum=parseAmount(txt); if(sum>0){ addItem(sum,$('cat').value); $('hint').textContent='Добавлено: '+fmt(sum)+' ('+txt+')'; } else{ $('hint').textContent='Не понял: '+txt; } };
- rec.onend=()=>{ $('mic').classList.remove('rec'); $('mic').textContent='🎤 Голос'; };
- $('mic').onclick=()=>{ if($('mic').classList.contains('rec')){ rec.stop(); return; } $('mic').classList.add('rec'); $('mic').textContent='⏹ Слушаю...'; rec.start(); };
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null;
+if (!SR) {
+  $('mic').disabled = true;
+} else {
+  rec = new SR();
+  rec.interimResults = false;
+  rec.onresult = e => {
+    const text = e.results[0][0].transcript;
+    const sum = parseAmount(text);
+    const L = t();
+    if (sum > 0) {
+      addItem(sum, $('cat').value);
+      $('hint').textContent = L.added + ': ' + fmtSum(sum) + ' (' + L.heard + ': «' + text + '»)';
+    } else {
+      $('hint').textContent = L.nope + ': «' + text + '». ' + L.again;
+    }
+  };
+  rec.onend = () => { $('mic').classList.remove('rec'); $('mic').textContent = t().voice; };
+  rec.onerror = () => { $('hint').textContent = t().micErr; };
+  $('mic').onclick = () => {
+    if ($('mic').classList.contains('rec')) { rec.stop(); return; }
+    rec.lang = t().sr;
+    $('mic').classList.add('rec');
+    $('mic').textContent = t().stop;
+    rec.start();
+  };
 }
-
-function tick(){ let d=new Date(); let p=n=>String(n).padStart(2,'0'); $('clock').textContent=p(d.getDate())+'.'+p(d.getMonth()+1)+'.'+d.getFullYear()+', '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds()); }
-tick(); setInterval(tick,1000);
-
-// Категории - ГАРАНТИРОВАННО
-let sel=$('cat');
-if(sel){
- sel.innerHTML=CATS.map(c=>'<option value="'+c+'">'+(ICONS[c]||'')+' '+(NAMES[c]||c)+'</option>').join('');
+function tick() {
+  const d = new Date();
+  const p = n => String(n).padStart(2, '0');
+  $('clock').textContent = p(d.getDate()) + '.' + p(d.getMonth() + 1) + '.' + d.getFullYear() + ', ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
 }
-console.log('Alpin v5 loaded, items',items.length,'cats',CATS.length);
-render();
+tick();
+setInterval(tick, 1000);
+applyLang();
+if (!SR) $('hint').textContent = t().noSR;
 </script>
 </body>
 </html>
