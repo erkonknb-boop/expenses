@@ -25,7 +25,8 @@
     background-attachment: fixed;
   }
   .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; position: relative; }
-  h1 { font-size: 24px; margin: 0; color: #a3263f; font-weight: 700; }
+  h1 { font-size: 24px; margin: 0; color: #a3263f; font-weight: 700; display:flex; align-items:center; gap:8px; }
+  .ver-top{ font-size:13px; font-weight:700; color:rgba(255,255,255,.5); border:1px solid rgba(255,255,255,.15); padding:3px 9px; border-radius:20px; background:rgba(255,255,255,.07); }
   .card {
     background: rgba(255,255,255,.07);
     border: 1px solid rgba(255,255,255,.08);
@@ -48,7 +49,7 @@
   }
   button.lang svg { width: 22px; height: 22px; }
   .topright { display: flex; align-items: center; gap: 8px; }
-  button.brand { cursor: default; position: relative; overflow: hidden; isolation: isolate; }
+  button.brand { cursor: default; position:relative; overflow:hidden; isolation:isolate; }
   button.brand::after{
     content:''; position:absolute; top:-50%; left:-30%; width:40%; height:200%;
     background: linear-gradient(120deg,transparent 0%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.6) 70%,transparent 100%);
@@ -95,8 +96,6 @@
   .hint { color: rgba(255,255,255,.75); font-size: 15px; margin: 10px 0 0; }
   .author { text-align: center; color: rgba(255,255,255,.55); font-size: 14px; margin: 10px 0 0; }
   .author a { color: rgba(255,255,255,.55); }
-  .footer-ver{ display:flex; justify-content:space-between; align-items:center; margin-top:12px; gap:8px; }
-  .ver{ font-size:12px; color:rgba(255,255,255,.4); border:1px solid rgba(255,255,255,.12); padding:4px 10px; border-radius:20px; background:rgba(255,255,255,.06); }
   .langmenu {
     display: none; position: absolute; right: 0; top: 52px;
     background: rgba(30,30,34,.95);
@@ -122,7 +121,7 @@
 </head>
 <body>
 <div class="top">
-  <h1 id="title"></h1>
+  <h1 id="title"><span id="titleText"></span><span class="ver-top">0.2</span></h1>
   <div class="topright">
     <button class="lang brand" id="brandBtn"></button>
     <button class="globe" id="langBtn">🌐</button>
@@ -167,15 +166,8 @@
   </div>
   <input type="file" id="fileIn" accept=".json,application/json" style="display:none">
 </div>
-
-<div class="footer-ver">
-  <span class="ver">v0.2</span>
-  <div style="text-align:center">
-    <p class="author" id="author" style="margin:0"></p>
-    <p class="author" style="margin:4px 0 0"><a href="https://instagram.com/duisembaev_16" target="_blank" rel="noopener">📷 Instagram: @duisembaev_16</a></p>
-  </div>
-  <span class="ver">v0.2</span>
-</div>
+<p class="author" id="author"></p>
+<p class="author"><a href="https://instagram.com/duisembaev_16" target="_blank" rel="noopener">📷 Instagram: @duisembaev_16</a></p>
 
 <div class="modal" id="infoModal">
 <div class="modalbox">
@@ -280,8 +272,7 @@ function fmtDate(ts) {
 function applyLang() {
   const L = t();
   document.documentElement.lang = lang;
-  $('title').textContent = L.title + ' v0.2';
-  $('brandBtn').innerHTML = LOGO + '<span>Alpin</span>';
+  $('titleText').textContent = L.title;
   $('mic').textContent = $('mic').classList.contains('rec') ? L.stop : L.voice;
   $('hint').textContent = L.hint;
   $('amount').placeholder = L.amount;
@@ -403,6 +394,7 @@ $('fileIn').onchange = e => {
 $('infoBtn').onclick=()=>{$('infoModal').classList.add('open')};
 $('infoOk').onclick=()=>{$('infoModal').classList.remove('open')};
 $('infoModal').onclick=e=>{if(e.target.id==='infoModal') e.currentTarget.classList.remove('open')};
+
 function parseRu(text) {
   const units = { ноль:0, один:1, одна:1, одну:1, два:2, две:2, три:3, четыре:4, пять:5, шесть:6, семь:7, восемь:8, девять:9, десять:10, одиннадцать:11, двенадцать:12, тринадцать:13, четырнадцать:14, пятнадцать:15, шестнадцать:16, семнадцать:17, восемнадцать:18, девятнадцать:19, двадцать:20, тридцать:30, сорок:40, пятьдесят:50, шестьдесят:60, семьдесят:70, восемьдесят:80, девяносто:90, сто:100, двести:200, триста:300, четыреста:400, пятьсот:500, шестьсот:600, семьсот:700, восемьсот:800, девятьсот:900, полтора:1.5, полторы:1.5 };
   let total = 0, cur = 0, found = false;
