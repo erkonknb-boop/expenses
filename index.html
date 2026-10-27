@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Expenses">
 <meta name="theme-color" content="#000000">
-<title>Expenses v0.3.2</title>
+<title>Expenses v0.4.2</title>
 <style>
 * {box-sizing: border-box;-webkit-tap-highlight-color: transparent;}
 html {background: #050507;}
@@ -30,17 +30,18 @@ button.globe {font-size: 20px;padding: 9px 12px;border-radius: 16px;line-height:
 button.globe.spin {animation: spin 0.8s cubic-bezier(.34,1.56,.64,1);}
 @keyframes spin {0% { transform: rotate(0deg) scale(1) }30% { transform: rotate(180deg) scale(1.15) }100% { transform: rotate(360deg) scale(1) }}
 button.info {width: 38px;height: 38px;padding: 0;border-radius: 50%;font-size: 18px;font-weight: 800;background: rgba(255,255,255,.12);border: 1px solid rgba(255,255,255,.15);display: flex;align-items: center;justify-content: center;}
-.micwrap {background: rgba(255,255,255,.08);border-radius: 18px;padding: 14px;text-align: center;}
-button.mic {padding: 12px 26px;font-size: 20px;border-radius: 22px;display: inline-flex;align-items: center;gap: 10px;}
-button.mic.rec {background: linear-gradient(180deg, #ff3b30, #b3170f);}
 button.gray {background: linear-gradient(180deg, #7a1b32, #4d1020);font-size: 16px;padding: 14px 12px;border-radius: 16px;}
 button.add {font-size: 19px;}
 input, select {font-size: 17px;padding: 12px;width: 100%;margin-bottom: 8px;color: #fff;font-family: inherit;background: rgba(255,255,255,.08);border: 1px solid rgba(255,255,255,.25);border-radius: 14px;outline: none;}
 input::placeholder {color: rgba(255,255,255,.5);}
 select option {color: #000;}
+label {display: block;font-size: 13px;color: rgba(255,255,255,.6);margin: 2px 0 4px 4px;}
 .row {display: flex;gap: 8px;}
-.row > * {flex: 1;}
+.row > * {flex: 1;min-width: 0;}
+input[type=date] {-webkit-appearance: none;appearance: none;min-width: 0;max-width: 100%;height: 50px;text-align: center;display: block;}
+input[type=date]::-webkit-date-and-time-value {text-align: center;min-height: 1.2em;}
 .row select {margin-bottom: 0;}
+.row input {margin-bottom: 0;}
 table {width: 100%;border-collapse: collapse;}
 th, td {text-align: left;padding: 10px 4px;border-bottom: 1px solid rgba(163,38,63,.45);font-size: 14px;vertical-align: middle;}
 th {color: rgba(255,255,255,.6);font-weight: 600;font-size: 15px;}
@@ -52,7 +53,6 @@ td.dt {white-space: nowrap;font-size: 13px;color: #fff;}
 .month {font-size: 17px;font-weight: 600;text-align: right;margin-top: 8px;color: rgba(255,255,255,.7);}
 .month span {color: #8a1f38;}
 button.del {font-size: 14px;padding: 7px 12px;border-radius: 12px;}
-.hint {color: rgba(255,255,255,.75);font-size: 15px;margin: 10px 0 0;}
 .author {text-align: center;color: rgba(255,255,255,.55);font-size: 14px;margin: 10px 0 0;}
 .author a {color: rgba(255,255,255,.55);}
 .footer-ver {display: flex;justify-content: center;margin-top: 12px;}
@@ -65,6 +65,24 @@ button.del {font-size: 14px;padding: 7px 12px;border-radius: 12px;}
 .arch-row {display: flex;justify-content: space-between;padding: 12px 4px;border-bottom: 1px solid rgba(255,255,255,.15);font-size: 16px;}
 .arch-row b {font-variant-numeric: tabular-nums;color: #a3263f;}
 .arch-title {font-size: 18px;font-weight: 700;margin: 0 0 8px;}
+.bar {height: 12px;border-radius: 8px;background: rgba(255,255,255,.12);overflow: hidden;margin: 10px 0 8px;}
+.bar i {display: block;height: 100%;width: 0;background: #2ea44f;transition: width .3s;}
+.limtxt {font-size: 14px;font-weight: 600;}
+.card.lim {padding: 10px 12px;border-radius: 18px;margin-bottom: 10px;}
+.lim .arch-title {font-size: 15px;margin: 0 0 4px;}
+.lim .bar {height: 8px;margin: 6px 0;}
+.lim .warn {font-size: 12px;padding: 6px 10px;margin-top: 6px;border-radius: 12px;}
+.lim .row {margin-top: 8px !important;}
+.lim input {font-size: 15px;padding: 8px 10px;border-radius: 12px;}
+.lim button.gray {font-size: 14px;padding: 8px 10px;border-radius: 12px;}
+.warn {display: none;margin-top: 8px;padding: 10px 12px;border-radius: 14px;font-size: 14px;font-weight: 600;}
+.warn.l1 {display: block;background: rgba(230,160,20,.25);border: 1px solid #e6a014;}
+.warn.l2 {display: block;background: rgba(220,40,40,.28);border: 1px solid #dc2828;}
+.debt {padding: 10px 4px;border-bottom: 1px solid rgba(255,255,255,.15);display: flex;justify-content: space-between;align-items: center;gap: 8px;}
+.debt .nm {font-size: 16px;font-weight: 600;}
+.debt .nm b {color: #a3263f;font-variant-numeric: tabular-nums;}
+.debt .dd {font-size: 13px;color: rgba(255,255,255,.65);margin-top: 3px;}
+.debt .late {color: #ff6b6b;font-weight: 700;}
 .modal {display: none;position: fixed;inset: 0;background: rgba(0,0,0,.7);-webkit-backdrop-filter: blur(8px);backdrop-filter: blur(8px);z-index: 100;align-items: center;justify-content: center;padding: 20px;}
 .modal.open {display: flex;}
 .modalbox {background: linear-gradient(180deg,#1c1c22,#101014);border: 1px solid rgba(255,255,255,.12);border-radius: 20px;padding: 20px;max-width: 420px;width: 100%;box-shadow: 0 20px 50px rgba(0,0,0,.6);}
@@ -89,11 +107,15 @@ button.del {font-size: 14px;padding: 7px 12px;border-radius: 12px;}
 <button data-l="zh"><span class="flag">🇨🇳</span> 中文</button>
 </div>
 </div>
-<div class="card">
-<div class="micwrap">
-<button class="mic" id="mic"></button>
+<div class="card lim">
+<p class="arch-title" id="limTitle"></p>
+<div class="limtxt" id="limTxt"></div>
+<div class="bar"><i id="limBar"></i></div>
+<div class="warn" id="limWarn"></div>
+<div class="row" style="margin-top:10px">
+<input id="limIn" type="number" inputmode="numeric">
+<button class="gray" id="limSave"></button>
 </div>
-<p class="hint" id="hint"></p>
 </div>
 <div class="card">
 <input id="amount" type="number" inputmode="numeric">
@@ -112,6 +134,18 @@ button.del {font-size: 14px;padding: 7px 12px;border-radius: 12px;}
 <div class="total" id="total"></div>
 </div>
 <div class="card">
+<p class="arch-title" id="debtTitle"></p>
+<input id="dName" type="text">
+<input id="dAmt" type="number" inputmode="numeric">
+<div class="row" style="margin-bottom:8px">
+<div><label id="lTaken"></label><input id="dTaken" type="date"></div>
+<div><label id="lRet"></label><input id="dRet" type="date"></div>
+</div>
+<button class="add" id="dAdd" style="width:100%"></button>
+<div id="debts"></div>
+<div class="total" id="dTotal"></div>
+</div>
+<div class="card">
 <p class="arch-title" id="archTitle"></p>
 <div id="archive"></div>
 </div>
@@ -124,7 +158,7 @@ button.del {font-size: 14px;padding: 7px 12px;border-radius: 12px;}
 </div>
 <p class="author" id="author"></p>
 <p class="author"><a href="https://instagram.com/duisembaev_16" target="_blank" rel="noopener">📷 Instagram: @duisembaev_16</a></p>
-<div class="footer-ver"><span class="ver">v0.3.2</span></div>
+<div class="footer-ver"><span class="ver">v0.4.2</span></div>
 <div class="modal" id="infoModal">
 <div class="modalbox">
 <h3 id="infoTitle"></h3>
@@ -137,15 +171,14 @@ button.del {font-size: 14px;padding: 7px 12px;border-radius: 12px;}
 <script>
 const KEY = 'expenses_v2';
 const OLD_KEY = 'expenses_v1';
+const DKEY = 'debts_v1';
+const LKEY = 'limit_v1';
 const LOGO = '<svg viewBox="0 0 24 24" fill="#fff"><path d="M1 20 L9 6 L14 14 L16.5 10 L23 20 Z"/><path d="M9 6 L11.2 9.8 L9 8.6 L6.8 9.8 Z" fill="#8a1f38"/></svg>';
 const CATS = ['food','transport','fuel','cafe','home','phone','health','pharmacy','clothes','fun','cinema','sport','gifts','education','subs','beauty','kids','pets','travel','taxes','other'];
 const ICONS = { food:'🛒', transport:'🚗', fuel:'⛽', cafe:'🍽️', home:'🏠', phone:'📱', health:'🩺', pharmacy:'💊', clothes:'👕', fun:'🎮', cinema:'🎬', sport:'🏋️', gifts:'🎁', education:'📚', subs:'🔁', beauty:'💄', kids:'🧸', pets:'🐾', travel:'✈️', taxes:'🧾', other:'📦' };
 const T = {
 ru: {
 title: 'Расходы, ₸',
-voice: '🎤 Голос',
-stop: '⏹ Слушаю...',
-hint: 'Скажи только сумму, например «тысяча тенге».',
 amount: 'Сумма в тенге',
 add: 'Добавить',
 date: 'Дата и время',
@@ -156,31 +189,42 @@ month: 'За месяц',
 archive: 'Архив по месяцам',
 del: 'Удалить',
 confirm: 'Удалить эту трату?',
-added: 'Добавлено',
-heard: 'услышано',
-nope: 'Не понял сумму',
-again: 'Попробуй ещё раз.',
-micErr: 'Ошибка микрофона.',
-noSR: 'Голосовой ввод не поддерживается.',
 exp: 'Сохранить копию',
 imp: 'Восстановить из файла',
 impOk: 'Восстановлено трат:',
 impBad: 'Не удалось прочитать файл.',
-impAsk: 'Заменить текущие траты данными из файла?',
+impAsk: 'Заменить текущие данные данными из файла?',
 author: 'Разработчик: Дуйсембаев Ернат',
 infoTitle: '🔒 Приватность и данные',
 info1: 'Этот сайт НЕ хранит ваши расходы на сервере. Все данные остаются только на вашем телефоне.',
 info2: 'Никакой регистрации. Даже я, разработчик, не вижу сколько вы потратили.',
 info3: 'Хотите перенести на другой телефон? Используйте кнопки «Сохранить копию» и «Восстановить из файла».',
+limTitle: '🎯 Лимит на месяц',
+limPh: 'Лимит в тенге, например 120000',
+limSave: 'Сохранить',
+limNone: 'Лимит не задан',
+limLeft: 'Осталось',
+limOf: 'из',
+limLow: '⚠️ Осталось мало денег из лимита!',
+limOver: '⛔ Лимит исчерпан! Превышение:',
+dTitle: '🤝 Должники',
+dName: 'Имя должника',
+dAmt: 'Сумма долга, ₸',
+dTaken: 'Когда взял',
+dRet: 'Когда вернёт',
+dAdd: 'Добавить должника',
+dDone: 'Вернул',
+dConfirm: 'Должник вернул деньги? Запись будет удалена.',
+dTotal: 'Мне должны',
+dLate: 'просрочено',
+dTo: 'вернуть до',
+dTook: 'взял',
+dNeed: 'Укажи имя и сумму.',
 cats: { food:'Продукты', transport:'Транспорт', fuel:'Заправка', cafe:'Кафе и рестораны', home:'Жильё', phone:'Связь', health:'Здоровье', pharmacy:'Аптека', clothes:'Одежда', fun:'Развлечения', cinema:'Кино', sport:'Спорт', gifts:'Подарки', education:'Образование', subs:'Подписки', beauty:'Красота и уход', kids:'Дети', pets:'Питомцы', travel:'Путешествия', taxes:'Налоги и платежи', other:'Прочее' },
-sr: 'ru-RU',
 loc: 'ru-RU'
 },
 kk: {
 title: 'Шығындар, ₸',
-voice: '🎤 Дауыс',
-stop: '⏹ Тыңдап тұрмын...',
-hint: 'Тек соманы айтыңыз.',
 amount: 'Сома (теңге)',
 add: 'Қосу',
 date: 'Күні мен уақыты',
@@ -191,12 +235,6 @@ month: 'Айға',
 archive: 'Айлар бойынша архив',
 del: 'Жою',
 confirm: 'Жоя саласыз ба?',
-added: 'Қосылды',
-heard: 'естілді',
-nope: 'Соманы түсінбедім',
-again: 'Тағы айтыңыз.',
-micErr: 'Микрофон қатесі.',
-noSR: 'Дауыс қолдауы жоқ.',
 exp: 'Көшірмені сақтау',
 imp: 'Файлдан қалпына келтіру',
 impOk: 'Қалпына келтірілді:',
@@ -207,15 +245,32 @@ infoTitle: '🔒 Құпиялылық',
 info1: 'Сайт серверде сақтамайды.',
 info2: 'Тіркелу жоқ.',
 info3: 'Көшіру үшін «Сақтау» қолданыңыз.',
+limTitle: '🎯 Айлық лимит',
+limPh: 'Лимит теңгемен, мысалы 120000',
+limSave: 'Сақтау',
+limNone: 'Лимит қойылмаған',
+limLeft: 'Қалды',
+limOf: '/',
+limLow: '⚠️ Лимиттен ақша аз қалды!',
+limOver: '⛔ Лимит таусылды! Артық:',
+dTitle: '🤝 Қарыздар',
+dName: 'Қарыздардың аты',
+dAmt: 'Қарыз сомасы, ₸',
+dTaken: 'Алған күні',
+dRet: 'Қайтару күні',
+dAdd: 'Қарызды қосу',
+dDone: 'Қайтарды',
+dConfirm: 'Қарыз қайтарылды ма? Жазба жойылады.',
+dTotal: 'Маған қарыз',
+dLate: 'мерзімі өтті',
+dTo: 'дейін қайтару',
+dTook: 'алды',
+dNeed: 'Аты мен соманы жазыңыз.',
 cats: { food:'Тағам', transport:'Көлік', fuel:'Жанармай', cafe:'Кафе', home:'Үй', phone:'Байланыс', health:'Денсаулық', pharmacy:'Дәріхана', clothes:'Киім', fun:'Демалыс', cinema:'Кино', sport:'Спорт', gifts:'Сыйлық', education:'Білім', subs:'Жазылым', beauty:'Сұлулық', kids:'Балалар', pets:'Үй жануары', travel:'Саяхат', taxes:'Салық', other:'Басқа' },
-sr: 'kk-KZ',
 loc: 'kk-KZ'
 },
 zh: {
 title: '支出, ₸',
-voice: '🎤 语音',
-stop: '⏹ 正在听...',
-hint: '只说金额。',
 amount: '金额（坚戈）',
 add: '添加',
 date: '日期和时间',
@@ -226,12 +281,6 @@ month: '本月',
 archive: '按月归档',
 del: '删除',
 confirm: '删除？',
-added: '已添加',
-heard: '听到',
-nope: '没听懂金额',
-again: '请再试一次。',
-micErr: '麦克风错误。',
-noSR: '不支持语音。',
 exp: '保存备份',
 imp: '从文件恢复',
 impOk: '已恢复：',
@@ -242,8 +291,28 @@ infoTitle: '🔒 隐私',
 info1: '不会在服务器保存。',
 info2: '无需注册。',
 info3: '换手机请用备份。',
+limTitle: '🎯 每月限额',
+limPh: '坚戈限额，例如 120000',
+limSave: '保存',
+limNone: '未设置限额',
+limLeft: '剩余',
+limOf: '/',
+limLow: '⚠️ 限额所剩不多！',
+limOver: '⛔ 限额已用完！超出：',
+dTitle: '🤝 欠款人',
+dName: '欠款人姓名',
+dAmt: '欠款金额, ₸',
+dTaken: '借款日期',
+dRet: '还款日期',
+dAdd: '添加欠款人',
+dDone: '已还',
+dConfirm: '对方已还钱？记录将被删除。',
+dTotal: '别人欠我',
+dLate: '已逾期',
+dTo: '还款期限',
+dTook: '借于',
+dNeed: '请填写姓名和金额。',
 cats: { food:'食品', transport:'交通', fuel:'加油', cafe:'餐厅', home:'住房', phone:'通讯', health:'健康', pharmacy:'药店', clothes:'服装', fun:'娱乐', cinema:'电影', sport:'运动', gifts:'礼物', education:'教育', subs:'订阅', beauty:'美容', kids:'孩子', pets:'宠物', travel:'旅行', taxes:'税费', other:'其他' },
-sr: 'zh-CN',
 loc: 'zh-CN'
 }
 };
@@ -265,7 +334,7 @@ window.addEventListener('unhandledrejection', ev => showErr(String(ev.reason)));
 
 let lang = lsGet('lang');
 if (!has(T, lang)) lang = 'ru';
-let mem = null;
+let mem = null, dmem = null;
 
 function norm(e) {
   if (!e || typeof e !== 'object') return null;
@@ -276,6 +345,12 @@ function norm(e) {
   if (!has(ICONS, c)) c = 'other';
   if (!(a > 0) || !t) return null;
   return { id: e.id || ('x' + t + Math.random()), amount: a, ts: Number(t), cat: c };
+}
+function normD(e) {
+  if (!e || typeof e !== 'object' || !e.name) return null;
+  const a = Number(e.amount);
+  if (!(a > 0)) return null;
+  return { id: e.id || ('d' + Date.now() + Math.random()), name: String(e.name), amount: a, taken: String(e.taken || ''), ret: String(e.ret || '') };
 }
 function load() {
   if (mem) return mem;
@@ -288,6 +363,18 @@ function save(list) {
   mem = list;
   lsSet(KEY, JSON.stringify(list));
 }
+function loadD() {
+  if (dmem) return dmem;
+  let a = [];
+  try { a = JSON.parse(lsGet(DKEY) || '[]'); } catch (e) {}
+  if (!Array.isArray(a)) a = [];
+  return a.map(normD).filter(Boolean);
+}
+function saveD(list) {
+  dmem = list;
+  lsSet(DKEY, JSON.stringify(list));
+}
+function getLim() { return Number(lsGet(LKEY)) || 0; }
 
 const p2 = n => ('0' + n).slice(-2);
 const fmt = n => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0') + ' ₸';
@@ -295,14 +382,51 @@ function fmtDate(ts) {
   const d = new Date(ts);
   return p2(d.getDate()) + '.' + p2(d.getMonth() + 1) + '.' + String(d.getFullYear()).slice(2) + ' ' + p2(d.getHours()) + ':' + p2(d.getMinutes());
 }
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate());
+}
+function fmtD(s) {
+  const p = String(s).split('-');
+  return p.length === 3 ? p[2] + '.' + p[1] + '.' + p[0].slice(2) : '—';
+}
+
+function monthSpent() {
+  const now = new Date();
+  let m = 0;
+  load().forEach(e => {
+    const d = new Date(e.ts);
+    if (d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()) m += e.amount;
+  });
+  return m;
+}
+function limState() {
+  const lim = getLim();
+  if (!lim) return null;
+  const left = lim - monthSpent();
+  return { lim: lim, left: left, lvl: left <= 0 ? 2 : (left <= lim * 0.2 ? 1 : 0) };
+}
+function renderLimit() {
+  const t = T[lang], s = limState();
+  const txt = $('limTxt'), bar = $('limBar'), w = $('limWarn');
+  w.className = 'warn';
+  if (!s) {
+    txt.textContent = t.limNone;
+    bar.style.width = '0';
+    return;
+  }
+  txt.textContent = t.limLeft + ': ' + fmt(Math.max(s.left, 0)) + ' ' + t.limOf + ' ' + fmt(s.lim);
+  bar.style.width = Math.min(100, (s.lim - s.left) / s.lim * 100) + '%';
+  bar.style.background = s.lvl === 2 ? '#dc2828' : s.lvl === 1 ? '#e6a014' : '#2ea44f';
+  if (s.lvl === 1) { w.className = 'warn l1'; w.textContent = t.limLow; }
+  if (s.lvl === 2) { w.className = 'warn l2'; w.textContent = t.limOver + ' ' + fmt(-s.left); }
+}
 
 function setText() {
   const t = T[lang];
   document.documentElement.lang = lang;
   $('title').textContent = t.title;
   $('brandBtn').innerHTML = LOGO + '<span>Alpin</span>';
-  $('mic').textContent = recOn ? t.stop : t.voice;
-  $('hint').textContent = t.hint;
   $('amount').placeholder = t.amount;
   $('add').textContent = t.add;
   $('thDate').textContent = t.date;
@@ -316,6 +440,15 @@ function setText() {
   $('infoText1').textContent = t.info1;
   $('infoText2').textContent = t.info2;
   $('infoText3').textContent = t.info3;
+  $('limTitle').textContent = t.limTitle;
+  $('limIn').placeholder = t.limPh;
+  $('limSave').textContent = t.limSave;
+  $('debtTitle').textContent = t.dTitle;
+  $('dName').placeholder = t.dName;
+  $('dAmt').placeholder = t.dAmt;
+  $('lTaken').textContent = t.dTaken;
+  $('lRet').textContent = t.dRet;
+  $('dAdd').textContent = t.dAdd;
   const sel = $('cat'), cur = sel.value || 'food';
   sel.innerHTML = '';
   CATS.forEach(c => {
@@ -324,6 +457,34 @@ function setText() {
     sel.appendChild(o);
   });
   sel.value = cur;
+}
+
+function renderDebts() {
+  const t = T[lang], list = loadD(), box = $('debts'), today = todayStr();
+  box.innerHTML = '';
+  let sum = 0;
+  list.sort((a, b) => (a.ret || '9999').localeCompare(b.ret || '9999'));
+  list.forEach(d => {
+    sum += d.amount;
+    const late = d.ret && d.ret < today;
+    const r = document.createElement('div'); r.className = 'debt';
+    const l = document.createElement('div'); l.className = 'nm';
+    const nm = document.createElement('span'); nm.textContent = d.name + ' — ';
+    const am = document.createElement('b'); am.textContent = fmt(d.amount);
+    l.appendChild(nm); l.appendChild(am);
+    const dd = document.createElement('div'); dd.className = 'dd';
+    dd.textContent = t.dTook + ' ' + fmtD(d.taken) + ' · ' + t.dTo + ' ' + fmtD(d.ret);
+    if (late) {
+      const lt = document.createElement('span'); lt.className = 'late'; lt.textContent = ' · ' + t.dLate;
+      dd.appendChild(lt);
+    }
+    l.appendChild(dd);
+    const b = document.createElement('button'); b.className = 'del'; b.textContent = t.dDone;
+    b.onclick = () => { if (confirm(t.dConfirm)) { saveD(loadD().filter(x => x.id !== d.id)); renderDebts(); } };
+    r.appendChild(l); r.appendChild(b);
+    box.appendChild(r);
+  });
+  $('dTotal').innerHTML = t.dTotal + ': <span>' + fmt(sum) + '</span>';
 }
 
 function render() {
@@ -361,83 +522,46 @@ function render() {
     const b = document.createElement('b'); b.textContent = fmt(months[k]);
     r.appendChild(s); r.appendChild(b); arch.appendChild(r);
   });
+  renderLimit();
+  renderDebts();
 }
 
 function addExpense(a) {
   a = Number(a);
   if (!isFinite(a) || a <= 0) return false;
+  const before = limState();
   const list = load();
   list.push({ id: 'e' + Date.now() + Math.random().toString(36).slice(2, 6), amount: a, ts: Date.now(), cat: $('cat').value || 'other' });
   save(list);
   $('amount').value = '';
   render();
+  const after = limState(), t = T[lang];
+  if (after && after.lvl > (before ? before.lvl : 0)) {
+    setTimeout(() => alert(after.lvl === 2 ? t.limOver + ' ' + fmt(-after.left) : t.limLow + '\n' + t.limLeft + ': ' + fmt(after.left)), 50);
+  }
   return true;
 }
 
-const W = { 'ноль':0,'один':1,'одна':1,'два':2,'две':2,'три':3,'четыре':4,'пять':5,'шесть':6,'семь':7,'восемь':8,'девять':9,'десять':10,'одиннадцать':11,'двенадцать':12,'тринадцать':13,'четырнадцать':14,'пятнадцать':15,'шестнадцать':16,'семнадцать':17,'восемнадцать':18,'девятнадцать':19,'двадцать':20,'тридцать':30,'сорок':40,'пятьдесят':50,'шестьдесят':60,'семьдесят':70,'восемьдесят':80,'девяносто':90,'сто':100,'двести':200,'триста':300,'четыреста':400,'пятьсот':500,'шестьсот':600,'семьсот':700,'восемьсот':800,'девятьсот':900 };
-
-function fromDigits(s) {
-  const re = /\d+(?:\.\d+)?/g;
-  let m, best = 0;
-  while ((m = re.exec(s))) {
-    let n = parseFloat(m[0]);
-    const rest = s.slice(m.index + m[0].length);
-    if (/^\s*(миллион|млн)/.test(rest)) n *= 1e6;
-    else if (/^\s*(тысяч|тыс|мың|千|к(?![а-я]))/.test(rest)) n *= 1000;
-    else if (/^\s*万/.test(rest)) n *= 10000;
-    if (n > best) best = n;
-  }
-  return best;
-}
-
-function fromWords(s) {
-  let total = 0, cur = 0, found = false;
-  s.split(/\s+/).forEach(w => {
-    if (!w) return;
-    if (has(W, w)) { cur += W[w]; found = true; }
-    else if (/^полтора|^полторы/.test(w)) { cur += 1.5; found = true; }
-    else if (/^полмиллион/.test(w)) { total += 500000; found = true; }
-    else if (/^тысяч|^тыс/.test(w)) { total += (cur || 1) * 1000; cur = 0; found = true; }
-    else if (/^миллион|^млн/.test(w)) { total += (cur || 1) * 1e6; cur = 0; found = true; }
-  });
-  total += cur;
-  return found ? total : 0;
-}
-
-function parseAmount(s) {
-  s = String(s).toLowerCase().replace(/ё/g, 'е');
-  let dec = null;
-  /* «01:05» телефон слышит как время, а это «1,5» */
-  s = s.replace(/\b0?(\d{1,2}):0(\d)\b/, (a, h, mi) => { dec = parseFloat(h + '.' + mi); return ' '; });
-  s = s.replace(/\d{1,2}:\d{2}(:\d{2})?/g, ' ');
-  s = s.replace(/(\d),(\d)/g, '$1.$2');
-  s = s.replace(/(\d)[\s\u00a0\u202f]+(?=\d{3}(?!\d))/g, '$1');
-  let val = Math.max(fromDigits(s), fromWords(s));
-  if (dec !== null && val >= 1000 && /^10+$/.test(String(val))) val = dec * val;
-  return val > 0 ? val : 0;
-}
-
-let rec = null, recOn = false;
-$('mic').onclick = () => {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition, t = T[lang];
-  if (!SR) { $('hint').textContent = t.noSR; return; }
-  if (rec) { try { rec.stop(); } catch (e) {} return; }
-  rec = new SR(); rec.lang = t.sr; rec.interimResults = false; rec.maxAlternatives = 3;
-  recOn = true; $('mic').classList.add('rec'); $('mic').textContent = t.stop;
-  rec.onresult = ev => {
-    const r = ev.results[0], said = r[0].transcript;
-    let amt = 0;
-    for (let i = 0; i < r.length && !amt; i++) amt = parseAmount(r[i].transcript);
-    if (amt && addExpense(amt)) $('hint').textContent = t.added + ': ' + fmt(amt) + ' (' + t.heard + ': ' + said + ')';
-    else $('hint').textContent = t.nope + ' (' + t.heard + ': ' + said + '). ' + t.again;
-  };
-  rec.onerror = () => { $('hint').textContent = t.micErr; };
-  rec.onend = () => { rec = null; recOn = false; $('mic').classList.remove('rec'); $('mic').textContent = T[lang].voice; };
-  try { rec.start(); } catch (e) { rec = null; recOn = false; $('mic').classList.remove('rec'); $('mic').textContent = t.voice; $('hint').textContent = t.micErr; }
-};
-
 $('add').onclick = () => addExpense($('amount').value);
 $('amount').addEventListener('keydown', e => { if (e.key === 'Enter') addExpense($('amount').value); });
+
+$('limSave').onclick = () => {
+  const v = Number($('limIn').value);
+  lsSet(LKEY, v > 0 ? String(v) : '0');
+  $('limIn').value = '';
+  renderLimit();
+};
+
+$('dTaken').value = todayStr();
+$('dAdd').onclick = () => {
+  const name = $('dName').value.trim(), a = Number($('dAmt').value);
+  if (!name || !(a > 0)) { alert(T[lang].dNeed); return; }
+  const list = loadD();
+  list.push({ id: 'd' + Date.now() + Math.random().toString(36).slice(2, 6), name: name, amount: a, taken: $('dTaken').value || todayStr(), ret: $('dRet').value || '' });
+  saveD(list);
+  $('dName').value = ''; $('dAmt').value = ''; $('dRet').value = ''; $('dTaken').value = todayStr();
+  renderDebts();
+};
 
 $('langBtn').onclick = e => {
   e.stopPropagation();
@@ -454,7 +578,8 @@ $('infoOk').onclick = () => $('infoModal').classList.remove('open');
 $('infoModal').onclick = e => { if (e.target === $('infoModal')) $('infoModal').classList.remove('open'); };
 
 $('exportBtn').onclick = () => {
-  const blob = new Blob([JSON.stringify(load(), null, 1)], { type: 'application/json' });
+  const data = { expenses: load(), debts: loadD(), limit: getLim() };
+  const blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'expenses-' + new Date().toISOString().slice(0, 10) + '.json';
@@ -467,10 +592,19 @@ $('fileIn').onchange = ev => {
   const r = new FileReader();
   r.onload = () => {
     try {
-      let a = JSON.parse(r.result);
-      if (!Array.isArray(a)) throw new Error('bad');
-      a = a.map(norm).filter(Boolean);
-      if (confirm(t.impAsk)) { save(a); render(); alert(t.impOk + ' ' + a.length); }
+      const raw = JSON.parse(r.result);
+      const arr = Array.isArray(raw) ? raw : raw && raw.expenses;
+      if (!Array.isArray(arr)) throw new Error('bad');
+      const a = arr.map(norm).filter(Boolean);
+      if (confirm(t.impAsk)) {
+        save(a);
+        if (!Array.isArray(raw)) {
+          if (Array.isArray(raw.debts)) saveD(raw.debts.map(normD).filter(Boolean));
+          if (Number(raw.limit) >= 0) lsSet(LKEY, String(Number(raw.limit) || 0));
+        }
+        render();
+        alert(t.impOk + ' ' + a.length);
+      }
     } catch (e) { alert(t.impBad); }
   };
   r.onerror = () => alert(t.impBad);
