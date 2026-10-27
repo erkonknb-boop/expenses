@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Расходы">
+<title>Расходы</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, Helvetica, Arial, sans-serif; margin: 0; padding: 16px; padding-top: calc(16px + env(safe-area-inset-top)); background: #f2f2f7; color: #111; }
+  h1 { font-size: 24px; margin: 0 0 12px; }
+  .card { background: #fff; border-radius: 14px; padding: 14px; margin-bottom: 14px; }
+  button { font-size: 17px; border: 0; border-radius: 12px; padding: 12px 16px; background: #007aff; color: #fff; }
+  button.mic { width: 100%; padding: 18px; font-size: 20px; background: #34c759; }
+  button.mic.rec { background: #ff3b30; }
+  input, select { font-size: 17px; padding: 10px; border: 1px solid #ccc; border-radius: 10px; width: 100%; margin-bottom: 8px; }
+  .row { display: flex; gap: 8px; }
+  .row > * { flex: 1; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 8px 4px; border-bottom: 1px solid #eee; font-size: 15px; }
+  td.sum, th.sum { text-align: right; white-space: nowrap; }
+  .total { font-size: 20px; font-weight: 700; text-align: right; margin-top: 10px; }
+  .del { background: none; color: #ff3b30; padding: 0 6px; font-size: 20px; }
+  .hint { color: #666; font-size: 14px; margin: 6px 0 0; }
+</style>
+</head>
+<body>
+<h1>Расходы, ₸</h1>
+
+<div class="card">
+  <button class="mic" id="mic">🎤 Голос</button>
+  <p class="hint" id="hint">Скажи только сумму, например «тысяча тенге».</p>
+</div>
+
+<div class="card">
+  <input id="amount" type="number" inputmode="numeric" placeholder="Сумма в тенге">
+  <div class="row">
+    <select id="cat">
+      <option>Продукты</option>
+      <option>Транспорт</option>
+      <option>Кафе и рестораны</option>
+      <option>Жильё</option>
+      <option>Связь</option>
+      <option>Здоровье</option>
+      <option>Одежда</option>
+      <option>Развлечения</option>
+      <option>Прочее</option>
+    </select>
+    <button id="add">Добавить</button>
+  </div>
+</div>
+
+<div class="card">
+  <table>
+    <thead><tr><th>Дата</th><th>Категория</th><th class="sum">Сумма</th><th></th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <div class="total" id="total"></div>
+</div>
+
+<script>
+const KEY = 'expenses_v1';
+let items = JSON.parse(localStorage.getItem(KEY) || '[]');
+
+const fmt = n => n.toLocaleString('ru-RU') + ' ₸';
+
+function save() { localStorage.setItem(KEY, JSON.stringify(items)); }
+
+function render() {
+  const tbody = document.getElementById('rows');
+  tbody.innerHTML = '';
+  let total = 0;
+  items.slice().reverse().forEach((it, idxFromEnd) => {
+    const idx = items.length - 1 - idxFromEnd;
+    total += it.sum;
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td>' + it.date + '</td><td>' + it.cat + '</td><td class="sum">' + fmt(it.sum) + '</td><td><button class="del" data-i="' + idx + '">×</button></td>';
+    tbody.appendChild(tr);
+  });
+  document.getElementById('total').textContent = 'Итого: ' + fmt(total);
+}
+
+function addItem(sum, cat) {
+  if (!sum || sum <= 0) return;
+  const d = new Date();
+  const date = d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
+  items.push({ sum: Math.round(sum), cat: cat, date: date });
+  save();
+  render();
+}
+
+document.getElementById('add').onclick = () => {
+  const v = parseFloat(document.getElementById('amount').value);
+  addItem(v, document.getElementById('cat').value);
+  document.getElementById('amount').value = '';
+};
+
+document.getElementById('rows').onclick = e => {
+  if (e.target.classList.contains('del')) {
+    items.splice(parseInt(e.target.dataset.i), 1);
+    save();
+    render();
+  }
+};
+
+// Разбор суммы из русской речи
+function parseRuNumber(text) {
+  text = text.toLowerCase().replace(/ё/g, 'е');
+  const digits = text.replace(/\s/g, '').match(/\d+/);
+  if (digits && !/[а-я]/.test(text.replace(/тыс|тенге|тг|к/g, ''))) {
+    let n = parseInt(digits[0]);
+    if (/тыс|\bк\b/.test(text) && n < 1000) n *= 1000;
+    return n;
+  }
+  const units = { ноль:0, один:1, одна:1, два:2, две:2, три:3, четыре:4, пять:5, шесть:6, семь:7, восемь:8, девять:9, десять:10, одиннадцать:11, двенадцать:12, тринадцать:13, четырнадцать:14, пятнадцать:15, шестнадцать:16, семнадцать:17, восемнадцать:18, девятнадцать:19, двадцать:20, тридцать:30, сорок:40, пятьдесят:50, шестьдесят:60, семьдесят:70, восемьдесят:80, девяносто:90, сто:100, двести:200, триста:300, четыреста:400, пятьсот:500, шестьсот:600, семьсот:700, восемьсот:800, девятьсот:900 };
+  let total = 0, current = 0, found = false;
+  text.split(/\s+/).forEach(w => {
+    if (w in units) { current += units[w]; found = true; }
+    else if (/^тысяч/.test(w)) { total += (current || 1) * 1000; current = 0; found = true; }
+    else if (/^миллион/.test(w)) { total += (current || 1) * 1000000; current = 0; found = true; }
+    else if (/^\d+$/.test(w)) { current += parseInt(w); found = true; }
+  });
+  total += current;
+  return found ? total : 0;
+}
+
+// Голосовой ввод
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const mic = document.getElementById('mic');
+const hint = document.getElementById('hint');
+let rec = null;
+
+if (!SR) {
+  mic.disabled = true;
+  hint.textContent = 'Голосовой ввод не поддерживается, используй ручной.';
+} else {
+  rec = new SR();
+  rec.lang = 'ru-RU';
+  rec.interimResults = false;
+  rec.onresult = e => {
+    const text = e.results[0][0].transcript;
+    const sum = parseRuNumber(text);
+    if (sum > 0) {
+      addItem(sum, document.getElementById('cat').value);
+      hint.textContent = 'Добавлено: ' + fmt(sum) + ' (услышано: «' + text + '»)';
+    } else {
+      hint.textContent = 'Не понял сумму: «' + text + '». Попробуй ещё раз.';
+    }
+  };
+  rec.onend = () => { mic.classList.remove('rec'); mic.textContent = '🎤 Голос'; };
+  rec.onerror = () => { hint.textContent = 'Ошибка микрофона. Проверь разрешение в Safari.'; };
+  mic.onclick = () => {
+    if (mic.classList.contains('rec')) { rec.stop(); return; }
+    mic.classList.add('rec');
+    mic.textContent = '⏹ Слушаю...';
+    rec.start();
+  };
+}
+
+render();
+</script>
+</body>
+</html>
