@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Expenses">
 <meta name="theme-color" content="#000000">
-<title>Expenses v0.3.1</title>
+<title>Expenses v0.3.2</title>
 <style>
 * {box-sizing: border-box;-webkit-tap-highlight-color: transparent;}
 html {background: #050507;}
@@ -124,7 +124,7 @@ button.del {font-size: 14px;padding: 7px 12px;border-radius: 12px;}
 </div>
 <p class="author" id="author"></p>
 <p class="author"><a href="https://instagram.com/duisembaev_16" target="_blank" rel="noopener">📷 Instagram: @duisembaev_16</a></p>
-<div class="footer-ver"><span class="ver">v0.3.1</span></div>
+<div class="footer-ver"><span class="ver">v0.3.2</span></div>
 <div class="modal" id="infoModal">
 <div class="modalbox">
 <h3 id="infoTitle"></h3>
@@ -375,24 +375,46 @@ function addExpense(a) {
 }
 
 const W = { 'ноль':0,'один':1,'одна':1,'два':2,'две':2,'три':3,'четыре':4,'пять':5,'шесть':6,'семь':7,'восемь':8,'девять':9,'десять':10,'одиннадцать':11,'двенадцать':12,'тринадцать':13,'четырнадцать':14,'пятнадцать':15,'шестнадцать':16,'семнадцать':17,'восемнадцать':18,'девятнадцать':19,'двадцать':20,'тридцать':30,'сорок':40,'пятьдесят':50,'шестьдесят':60,'семьдесят':70,'восемьдесят':80,'девяносто':90,'сто':100,'двести':200,'триста':300,'четыреста':400,'пятьсот':500,'шестьсот':600,'семьсот':700,'восемьсот':800,'девятьсот':900 };
-function parseAmount(s) {
-  s = s.toLowerCase().replace(/ё/g, 'е').replace(/,/g, '.');
-  const m = s.match(/\d[\d\s.]*/);
-  if (m) {
-    let num = parseFloat(m[0].replace(/\s/g, ''));
+
+function fromDigits(s) {
+  const re = /\d+(?:\.\d+)?/g;
+  let m, best = 0;
+  while ((m = re.exec(s))) {
+    let n = parseFloat(m[0]);
     const rest = s.slice(m.index + m[0].length);
-    if (/тысяч|тыс|\bk\b|к\b|千|мың/.test(rest)) num *= 1000;
-    else if (/миллион|млн|万/.test(s)) num *= 1e6;
-    if (num > 0) return num;
+    if (/^\s*(миллион|млн)/.test(rest)) n *= 1e6;
+    else if (/^\s*(тысяч|тыс|мың|千|к(?![а-я]))/.test(rest)) n *= 1000;
+    else if (/^\s*万/.test(rest)) n *= 10000;
+    if (n > best) best = n;
   }
+  return best;
+}
+
+function fromWords(s) {
   let total = 0, cur = 0, found = false;
   s.split(/\s+/).forEach(w => {
+    if (!w) return;
     if (has(W, w)) { cur += W[w]; found = true; }
+    else if (/^полтора|^полторы/.test(w)) { cur += 1.5; found = true; }
+    else if (/^полмиллион/.test(w)) { total += 500000; found = true; }
     else if (/^тысяч|^тыс/.test(w)) { total += (cur || 1) * 1000; cur = 0; found = true; }
     else if (/^миллион|^млн/.test(w)) { total += (cur || 1) * 1e6; cur = 0; found = true; }
   });
   total += cur;
-  return found && total > 0 ? total : 0;
+  return found ? total : 0;
+}
+
+function parseAmount(s) {
+  s = String(s).toLowerCase().replace(/ё/g, 'е');
+  let dec = null;
+  /* «01:05» телефон слышит как время, а это «1,5» */
+  s = s.replace(/\b0?(\d{1,2}):0(\d)\b/, (a, h, mi) => { dec = parseFloat(h + '.' + mi); return ' '; });
+  s = s.replace(/\d{1,2}:\d{2}(:\d{2})?/g, ' ');
+  s = s.replace(/(\d),(\d)/g, '$1.$2');
+  s = s.replace(/(\d)[\s\u00a0\u202f]+(?=\d{3}(?!\d))/g, '$1');
+  let val = Math.max(fromDigits(s), fromWords(s));
+  if (dec !== null && val >= 1000 && /^10+$/.test(String(val))) val = dec * val;
+  return val > 0 ? val : 0;
 }
 
 let rec = null, recOn = false;
