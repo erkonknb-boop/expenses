@@ -32,6 +32,10 @@
   .author { text-align: center; color: #8e8e93; font-size: 13px; margin: 8px 0 0; }
   .langmenu { display: none; position: absolute; right: 16px; top: calc(52px + env(safe-area-inset-top)); background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.2); overflow: hidden; z-index: 10; }
   .langmenu button { display: block; width: 100%; background: #fff; color: #111; border-radius: 0; border-bottom: 1px solid #eee; text-align: left; }
+  .clock { text-align: center; font-size: 18px; font-weight: 600; color: #444; margin: 0 0 14px; font-variant-numeric: tabular-nums; }
+  .arch-row { display: flex; justify-content: space-between; padding: 8px 4px; border-bottom: 1px solid #eee; font-size: 15px; }
+  .arch-row b { font-variant-numeric: tabular-nums; }
+  .arch-title { font-size: 16px; font-weight: 700; margin: 0 0 6px; }
 </style>
 </head>
 <body>
@@ -59,6 +63,8 @@
   </div>
 </div>
 
+<div class="clock" id="clock"></div>
+
 <div class="card">
   <table>
     <thead><tr><th id="thDate"></th><th id="thCat"></th><th class="sum" id="thSum"></th><th></th></tr></thead>
@@ -66,6 +72,11 @@
   </table>
   <div class="month" id="month"></div>
   <div class="total" id="total"></div>
+</div>
+
+<div class="card">
+  <p class="arch-title" id="archTitle"></p>
+  <div id="archive"></div>
 </div>
 
 <div class="card">
@@ -77,6 +88,7 @@
 </div>
 
 <p class="author" id="author"></p>
+<p class="author"><a href="https://instagram.com/duisembaev_16" target="_blank" rel="noopener" style="color:#8e8e93">📷 Instagram: @duisembaev_16</a></p>
 
 <script>
 const KEY = 'expenses_v2';
@@ -93,6 +105,7 @@ const T = {
     hint: 'Скажи только сумму, например «тысяча тенге».',
     amount: 'Сумма в тенге', add: 'Добавить',
     date: 'Дата и время', cat: 'Категория', sum: 'Сумма', total: 'Итого', month: 'За месяц',
+    archive: 'Архив по месяцам',
     del: 'Удалить', confirm: 'Удалить эту трату?',
     added: 'Добавлено', heard: 'услышано', nope: 'Не понял сумму', again: 'Попробуй ещё раз.',
     micErr: 'Ошибка микрофона. Проверь разрешение в Safari.', noSR: 'Голосовой ввод не поддерживается, используй ручной.',
@@ -107,6 +120,7 @@ const T = {
     hint: 'Тек соманы айтыңыз, мысалы «мың теңге».',
     amount: 'Сома (теңге)', add: 'Қосу',
     date: 'Күні мен уақыты', cat: 'Санат', sum: 'Сома', total: 'Жалпы', month: 'Айға',
+    archive: 'Айлар бойынша архив',
     del: 'Жою', confirm: 'Бұл шығынды жоя саласыз ба?',
     added: 'Қосылды', heard: 'естілді', nope: 'Соманы түсінбедім', again: 'Тағы бір рет айтыңыз.',
     micErr: 'Микрофон қатесі. Safari-де рұқсатты тексеріңіз.', noSR: 'Дауыспен енгізу қолдау таппайды, қолмен енгізіңіз.',
@@ -121,6 +135,7 @@ const T = {
     hint: '只说金额，例如“一千坚戈”。',
     amount: '金额（坚戈）', add: '添加',
     date: '日期和时间', cat: '类别', sum: '金额', total: '合计', month: '本月',
+    archive: '按月归档',
     del: '删除', confirm: '删除这笔支出吗？',
     added: '已添加', heard: '听到', nope: '没听懂金额', again: '请再试一次。',
     micErr: '麦克风错误。请检查 Safari 的权限。', noSR: '不支持语音输入，请手动输入。',
@@ -202,6 +217,25 @@ function render() {
   }
   $('month').textContent = L.month + ': ' + fmtSum(month);
   $('total').textContent = L.total + ': ' + fmtSum(total);
+  renderArchive();
+}
+
+// ---------- Архив по месяцам ----------
+function renderArchive() {
+  const L = t();
+  $('archTitle').textContent = '📅 ' + L.archive;
+  const byMonth = {};
+  items.forEach(it => {
+    const d = new Date(it.ts);
+    const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+    byMonth[key] = (byMonth[key] || 0) + it.sum;
+  });
+  const keys = Object.keys(byMonth).sort().reverse();
+  $('archive').innerHTML = keys.map(k => {
+    const [y, m] = k.split('-');
+    const name = new Date(+y, +m - 1, 1).toLocaleDateString(L.loc, { month: 'long', year: 'numeric' });
+    return '<div class="arch-row"><span>' + name + '</span><b>' + fmtSum(byMonth[k]) + '</b></div>';
+  }).join('');
 }
 
 function addItem(sum, cat) {
@@ -369,6 +403,15 @@ if (!SR) {
     rec.start();
   };
 }
+
+// ---------- Живые дата и время ----------
+function tick() {
+  const d = new Date();
+  const p = n => String(n).padStart(2, '0');
+  $('clock').textContent = p(d.getDate()) + '.' + p(d.getMonth() + 1) + '.' + d.getFullYear() + ', ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+}
+tick();
+setInterval(tick, 1000);
 
 applyLang();
 if (!SR) $('hint').textContent = t().noSR;
