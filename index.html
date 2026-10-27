@@ -5,161 +5,353 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Расходы">
-<title>Расходы</title>
+<meta name="apple-mobile-web-app-title" content="Expenses">
+<title>Expenses</title>
 <style>
   * { box-sizing: border-box; }
   body { font-family: -apple-system, Helvetica, Arial, sans-serif; margin: 0; padding: 16px; padding-top: calc(16px + env(safe-area-inset-top)); background: #f2f2f7; color: #111; }
-  h1 { font-size: 24px; margin: 0 0 12px; }
+  .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  h1 { font-size: 24px; margin: 0; }
   .card { background: #fff; border-radius: 14px; padding: 14px; margin-bottom: 14px; }
   button { font-size: 17px; border: 0; border-radius: 12px; padding: 12px 16px; background: #007aff; color: #fff; }
+  button.lang { font-size: 15px; padding: 8px 14px; background: #e5e5ea; color: #111; }
   button.mic { width: 100%; padding: 18px; font-size: 20px; background: #34c759; }
   button.mic.rec { background: #ff3b30; }
+  button.gray { background: #e5e5ea; color: #111; font-size: 15px; padding: 10px 12px; }
   input, select { font-size: 17px; padding: 10px; border: 1px solid #ccc; border-radius: 10px; width: 100%; margin-bottom: 8px; }
   .row { display: flex; gap: 8px; }
   .row > * { flex: 1; }
   table { width: 100%; border-collapse: collapse; }
-  th, td { text-align: left; padding: 8px 4px; border-bottom: 1px solid #eee; font-size: 15px; }
+  th, td { text-align: left; padding: 8px 4px; border-bottom: 1px solid #eee; font-size: 14px; vertical-align: middle; }
   td.sum, th.sum { text-align: right; white-space: nowrap; }
+  td.dt { white-space: nowrap; font-size: 13px; color: #444; }
   .total { font-size: 20px; font-weight: 700; text-align: right; margin-top: 10px; }
-  .del { background: none; color: #ff3b30; padding: 0 6px; font-size: 20px; }
+  button.del { background: #ff3b30; color: #fff; font-size: 13px; padding: 6px 10px; border-radius: 8px; }
   .hint { color: #666; font-size: 14px; margin: 6px 0 0; }
+  .langmenu { display: none; position: absolute; right: 16px; top: calc(52px + env(safe-area-inset-top)); background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.2); overflow: hidden; z-index: 10; }
+  .langmenu button { display: block; width: 100%; background: #fff; color: #111; border-radius: 0; border-bottom: 1px solid #eee; text-align: left; }
 </style>
 </head>
 <body>
-<h1>Расходы, ₸</h1>
 
-<div class="card">
-  <button class="mic" id="mic">🎤 Голос</button>
-  <p class="hint" id="hint">Скажи только сумму, например «тысяча тенге».</p>
+<div class="top">
+  <h1 id="title"></h1>
+  <button class="lang" id="langBtn">🌐</button>
+</div>
+<div class="langmenu" id="langMenu">
+  <button data-l="ru">Русский</button>
+  <button data-l="kk">Қазақша</button>
+  <button data-l="zh">中文</button>
 </div>
 
 <div class="card">
-  <input id="amount" type="number" inputmode="numeric" placeholder="Сумма в тенге">
+  <button class="mic" id="mic"></button>
+  <p class="hint" id="hint"></p>
+</div>
+
+<div class="card">
+  <input id="amount" type="number" inputmode="numeric">
   <div class="row">
-    <select id="cat">
-      <option>Продукты</option>
-      <option>Транспорт</option>
-      <option>Кафе и рестораны</option>
-      <option>Жильё</option>
-      <option>Связь</option>
-      <option>Здоровье</option>
-      <option>Одежда</option>
-      <option>Развлечения</option>
-      <option>Прочее</option>
-    </select>
-    <button id="add">Добавить</button>
+    <select id="cat"></select>
+    <button id="add"></button>
   </div>
 </div>
 
 <div class="card">
   <table>
-    <thead><tr><th>Дата</th><th>Категория</th><th class="sum">Сумма</th><th></th></tr></thead>
+    <thead><tr><th id="thDate"></th><th id="thCat"></th><th class="sum" id="thSum"></th><th></th></tr></thead>
     <tbody id="rows"></tbody>
   </table>
   <div class="total" id="total"></div>
 </div>
 
+<div class="card">
+  <div class="row">
+    <button class="gray" id="exportBtn"></button>
+    <button class="gray" id="importBtn"></button>
+  </div>
+  <input type="file" id="fileIn" accept=".json,application/json" style="display:none">
+</div>
+
 <script>
-const KEY = 'expenses_v1';
-let items = JSON.parse(localStorage.getItem(KEY) || '[]');
+const KEY = 'expenses_v2';
+const OLD_KEY = 'expenses_v1';
 
-const fmt = n => n.toLocaleString('ru-RU') + ' ₸';
+// ---------- Языки ----------
+const CATS = ['food','transport','cafe','home','phone','health','clothes','fun','other'];
+const T = {
+  ru: {
+    title: 'Расходы, ₸', voice: '🎤 Голос', stop: '⏹ Слушаю...',
+    hint: 'Скажи только сумму, например «тысяча тенге».',
+    amount: 'Сумма в тенге', add: 'Добавить',
+    date: 'Дата и время', cat: 'Категория', sum: 'Сумма', total: 'Итого',
+    del: 'Удалить', confirm: 'Удалить эту трату?',
+    added: 'Добавлено', heard: 'услышано', nope: 'Не понял сумму', again: 'Попробуй ещё раз.',
+    micErr: 'Ошибка микрофона. Проверь разрешение в Safari.', noSR: 'Голосовой ввод не поддерживается, используй ручной.',
+    exp: 'Сохранить копию', imp: 'Восстановить из файла',
+    impOk: 'Восстановлено трат:', impBad: 'Не удалось прочитать файл.', impAsk: 'Заменить текущие траты данными из файла?',
+    cats: { food:'Продукты', transport:'Транспорт', cafe:'Кафе и рестораны', home:'Жильё', phone:'Связь', health:'Здоровье', clothes:'Одежда', fun:'Развлечения', other:'Прочее' },
+    sr: 'ru-RU', loc: 'ru-RU'
+  },
+  kk: {
+    title: 'Шығындар, ₸', voice: '🎤 Дауыс', stop: '⏹ Тыңдап тұрмын...',
+    hint: 'Тек соманы айтыңыз, мысалы «мың теңге».',
+    amount: 'Сома (теңге)', add: 'Қосу',
+    date: 'Күні мен уақыты', cat: 'Санат', sum: 'Сома', total: 'Жалпы',
+    del: 'Жою', confirm: 'Бұл шығынды жоя саласыз ба?',
+    added: 'Қосылды', heard: 'естілді', nope: 'Соманы түсінбедім', again: 'Тағы бір рет айтыңыз.',
+    micErr: 'Микрофон қатесі. Safari-де рұқсатты тексеріңіз.', noSR: 'Дауыспен енгізу қолдау таппайды, қолмен енгізіңіз.',
+    exp: 'Көшірмені сақтау', imp: 'Файлдан қалпына келтіру',
+    impOk: 'Қалпына келтірілді:', impBad: 'Файлды оқу мүмкін болмады.', impAsk: 'Ағымдағы шығындарды файлдағымен алмастырасыз ба?',
+    cats: { food:'Тағам', transport:'Көлік', cafe:'Кафе және ресторан', home:'Өмір сүру', phone:'Байланыс', health:'Денсаулық', clothes:'Киім', fun:'Демалыс', other:'Басқа' },
+    sr: 'kk-KZ', loc: 'kk-KZ'
+  },
+  zh: {
+    title: '支出, ₸', voice: '🎤 语音', stop: '⏹ 正在听...',
+    hint: '只说金额，例如“一千坚戈”。',
+    amount: '金额（坚戈）', add: '添加',
+    date: '日期和时间', cat: '类别', sum: '金额', total: '合计',
+    del: '删除', confirm: '删除这笔支出吗？',
+    added: '已添加', heard: '听到', nope: '没听懂金额', again: '请再试一次。',
+    micErr: '麦克风错误。请检查 Safari 的权限。', noSR: '不支持语音输入，请手动输入。',
+    exp: '保存备份', imp: '从文件恢复',
+    impOk: '已恢复笔数：', impBad: '无法读取文件。', impAsk: '用文件中的数据替换当前支出吗？',
+    cats: { food:'食品', transport:'交通', cafe:'餐厅', home:'住房', phone:'通讯', health:'健康', clothes:'服装', fun:'娱乐', other:'其他' },
+    sr: 'zh-CN', loc: 'zh-CN'
+  }
+};
 
+let lang = localStorage.getItem('lang') || 'ru';
+const $ = id => document.getElementById(id);
+const t = () => T[lang];
+
+// ---------- Данные ----------
+let items = load();
+
+function load() {
+  let v = JSON.parse(localStorage.getItem(KEY) || 'null');
+  if (v) return v;
+  // миграция со старой версии
+  const old = JSON.parse(localStorage.getItem(OLD_KEY) || '[]');
+  const catMap = {'Продукты':'food','Транспорт':'transport','Кафе и рестораны':'cafe','Жильё':'home','Связь':'phone','Здоровье':'health','Одежда':'clothes','Развлечения':'fun','Прочее':'other'};
+  const year = new Date().getFullYear();
+  return old.map(o => ({ sum: o.sum, cat: catMap[o.cat] || 'other', ts: parseOldDate(o.date, year) }));
+}
+function parseOldDate(s, year) {
+  const m = /^(\d{2})\.(\d{2})/.exec(s || '');
+  return m ? new Date(year, +m[2] - 1, +m[1], 12, 0).getTime() : Date.now();
+}
 function save() { localStorage.setItem(KEY, JSON.stringify(items)); }
 
+const fmtSum = n => n.toLocaleString('ru-RU') + ' ₸';
+function fmtDate(ts) {
+  const d = new Date(ts);
+  const p = n => String(n).padStart(2, '0');
+  return p(d.getDate()) + '.' + p(d.getMonth() + 1) + '.' + d.getFullYear() + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+}
+
+// ---------- Интерфейс ----------
+function applyLang() {
+  const L = t();
+  document.documentElement.lang = lang;
+  $('title').textContent = L.title;
+  $('langBtn').textContent = '🌐 ' + ({ru:'Рус', kk:'Қаз', zh:'中文'})[lang];
+  $('mic').textContent = $('mic').classList.contains('rec') ? L.stop : L.voice;
+  $('hint').textContent = L.hint;
+  $('amount').placeholder = L.amount;
+  $('add').textContent = L.add;
+  $('thDate').textContent = L.date;
+  $('thCat').textContent = L.cat;
+  $('thSum').textContent = L.sum;
+  $('exportBtn').textContent = '💾 ' + L.exp;
+  $('importBtn').textContent = '📂 ' + L.imp;
+  const sel = $('cat'), cur = sel.value || 'food';
+  sel.innerHTML = CATS.map(c => '<option value="' + c + '">' + L.cats[c] + '</option>').join('');
+  sel.value = cur;
+  if (rec) rec.lang = L.sr;
+  render();
+}
+
 function render() {
-  const tbody = document.getElementById('rows');
+  const L = t();
+  const tbody = $('rows');
   tbody.innerHTML = '';
   let total = 0;
-  items.slice().reverse().forEach((it, idxFromEnd) => {
-    const idx = items.length - 1 - idxFromEnd;
+  for (let i = items.length - 1; i >= 0; i--) {
+    const it = items[i];
     total += it.sum;
     const tr = document.createElement('tr');
-    tr.innerHTML = '<td>' + it.date + '</td><td>' + it.cat + '</td><td class="sum">' + fmt(it.sum) + '</td><td><button class="del" data-i="' + idx + '">×</button></td>';
+    tr.innerHTML = '<td class="dt">' + fmtDate(it.ts) + '</td><td>' + (L.cats[it.cat] || it.cat) + '</td><td class="sum">' + fmtSum(it.sum) + '</td><td><button class="del" data-i="' + i + '">' + L.del + '</button></td>';
     tbody.appendChild(tr);
-  });
-  document.getElementById('total').textContent = 'Итого: ' + fmt(total);
+  }
+  $('total').textContent = L.total + ': ' + fmtSum(total);
 }
 
 function addItem(sum, cat) {
   if (!sum || sum <= 0) return;
-  const d = new Date();
-  const date = d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
-  items.push({ sum: Math.round(sum), cat: cat, date: date });
+  items.push({ sum: Math.round(sum), cat: cat, ts: Date.now() });
   save();
   render();
 }
 
-document.getElementById('add').onclick = () => {
-  const v = parseFloat(document.getElementById('amount').value);
-  addItem(v, document.getElementById('cat').value);
-  document.getElementById('amount').value = '';
+$('add').onclick = () => {
+  const v = parseFloat($('amount').value);
+  addItem(v, $('cat').value);
+  $('amount').value = '';
 };
 
-document.getElementById('rows').onclick = e => {
+$('rows').onclick = e => {
   if (e.target.classList.contains('del')) {
-    items.splice(parseInt(e.target.dataset.i), 1);
-    save();
-    render();
+    if (confirm(t().confirm)) {
+      items.splice(parseInt(e.target.dataset.i), 1);
+      save();
+      render();
+    }
   }
 };
 
-// Разбор суммы из русской речи
-function parseRuNumber(text) {
-  text = text.toLowerCase().replace(/ё/g, 'е');
-  const digits = text.replace(/\s/g, '').match(/\d+/);
-  if (digits && !/[а-я]/.test(text.replace(/тыс|тенге|тг|к/g, ''))) {
-    let n = parseInt(digits[0]);
-    if (/тыс|\bк\b/.test(text) && n < 1000) n *= 1000;
-    return n;
-  }
+// ---------- Смена языка ----------
+$('langBtn').onclick = e => {
+  e.stopPropagation();
+  const m = $('langMenu');
+  m.style.display = m.style.display === 'block' ? 'none' : 'block';
+};
+document.addEventListener('click', () => { $('langMenu').style.display = 'none'; });
+$('langMenu').onclick = e => {
+  const l = e.target.dataset.l;
+  if (l) { lang = l; localStorage.setItem('lang', l); applyLang(); }
+};
+
+// ---------- Резервная копия ----------
+$('exportBtn').onclick = () => {
+  const blob = new Blob([JSON.stringify(items, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  const d = new Date();
+  a.href = URL.createObjectURL(blob);
+  a.download = 'expenses-' + d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0') + '.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+};
+$('importBtn').onclick = () => $('fileIn').click();
+$('fileIn').onchange = e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const data = JSON.parse(r.result);
+      if (!Array.isArray(data)) throw 0;
+      const clean = data.filter(x => x && typeof x.sum === 'number' && x.ts).map(x => ({ sum: x.sum, cat: CATS.includes(x.cat) ? x.cat : 'other', ts: x.ts }));
+      if (confirm(t().impAsk)) {
+        items = clean;
+        save();
+        render();
+        alert(t().impOk + ' ' + clean.length);
+      }
+    } catch (err) { alert(t().impBad); }
+    e.target.value = '';
+  };
+  r.readAsText(f);
+};
+
+// ---------- Разбор чисел из речи ----------
+function parseRu(text) {
   const units = { ноль:0, один:1, одна:1, два:2, две:2, три:3, четыре:4, пять:5, шесть:6, семь:7, восемь:8, девять:9, десять:10, одиннадцать:11, двенадцать:12, тринадцать:13, четырнадцать:14, пятнадцать:15, шестнадцать:16, семнадцать:17, восемнадцать:18, девятнадцать:19, двадцать:20, тридцать:30, сорок:40, пятьдесят:50, шестьдесят:60, семьдесят:70, восемьдесят:80, девяносто:90, сто:100, двести:200, триста:300, четыреста:400, пятьсот:500, шестьсот:600, семьсот:700, восемьсот:800, девятьсот:900 };
-  let total = 0, current = 0, found = false;
+  let total = 0, cur = 0, found = false;
   text.split(/\s+/).forEach(w => {
-    if (w in units) { current += units[w]; found = true; }
-    else if (/^тысяч/.test(w)) { total += (current || 1) * 1000; current = 0; found = true; }
-    else if (/^миллион/.test(w)) { total += (current || 1) * 1000000; current = 0; found = true; }
-    else if (/^\d+$/.test(w)) { current += parseInt(w); found = true; }
+    if (w in units) { cur += units[w]; found = true; }
+    else if (/^тысяч/.test(w)) { total += (cur || 1) * 1000; cur = 0; found = true; }
+    else if (/^миллион/.test(w)) { total += (cur || 1) * 1000000; cur = 0; found = true; }
+    else if (/^\d+$/.test(w)) { cur += parseInt(w); found = true; }
   });
-  total += current;
+  total += cur;
   return found ? total : 0;
 }
 
-// Голосовой ввод
+function parseKk(text) {
+  const units = { бір:1, екі:2, үш:3, төрт:4, бес:5, алты:6, жеті:7, сегіз:8, тоғыз:9, он:10, жиырма:20, отыз:30, қырық:40, елу:50, алпыс:60, жетпіс:70, сексен:80, тоқсан:90, жүз:100 };
+  let total = 0, cur = 0, found = false;
+  text.split(/\s+/).forEach(w => {
+    if (w in units) {
+      if (w === 'жүз') { cur = (cur || 1) * 100; } else { cur += units[w]; }
+      found = true;
+    }
+    else if (/^мың/.test(w) || /^мын/.test(w)) { total += (cur || 1) * 1000; cur = 0; found = true; }
+    else if (/^миллион/.test(w)) { total += (cur || 1) * 1000000; cur = 0; found = true; }
+    else if (/^\d+$/.test(w)) { cur += parseInt(w); found = true; }
+  });
+  total += cur;
+  return found ? total : 0;
+}
+
+function parseZh(text) {
+  const d = { '零':0,'一':1,'二':2,'两':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9 };
+  const arabic = text.replace(/\s/g, '').match(/\d+/);
+  if (arabic) {
+    let n = parseInt(arabic[0]);
+    if (/万/.test(text) && n < 10000) n *= 10000;
+    else if (/千/.test(text) && n < 1000) n *= 1000;
+    return n;
+  }
+  let total = 0, section = 0, num = 0, found = false;
+  for (const ch of text) {
+    if (ch in d) { num = d[ch]; found = true; }
+    else if (ch === '十') { section += (num || 1) * 10; num = 0; found = true; }
+    else if (ch === '百') { section += (num || 1) * 100; num = 0; found = true; }
+    else if (ch === '千') { section += (num || 1) * 1000; num = 0; found = true; }
+    else if (ch === '万') { total += (section + num || 1) * 10000; section = 0; num = 0; found = true; }
+  }
+  total += section + num;
+  return found ? total : 0;
+}
+
+function parseAmount(text) {
+  text = text.toLowerCase().replace(/ё/g, 'е');
+  const digits = text.replace(/\s/g, '').match(/^\d+/);
+  if (lang !== 'zh' && digits && /\d/.test(text)) {
+    let n = parseInt(digits[0]);
+    if (/тыс|мың|\bк\b/.test(text) && n < 1000) n *= 1000;
+    return n;
+  }
+  if (lang === 'ru') return parseRu(text);
+  if (lang === 'kk') return parseKk(text);
+  return parseZh(text);
+}
+
+// ---------- Голосовой ввод ----------
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-const mic = document.getElementById('mic');
-const hint = document.getElementById('hint');
 let rec = null;
 
 if (!SR) {
-  mic.disabled = true;
-  hint.textContent = 'Голосовой ввод не поддерживается, используй ручной.';
+  $('mic').disabled = true;
 } else {
   rec = new SR();
-  rec.lang = 'ru-RU';
   rec.interimResults = false;
   rec.onresult = e => {
     const text = e.results[0][0].transcript;
-    const sum = parseRuNumber(text);
+    const sum = parseAmount(text);
+    const L = t();
     if (sum > 0) {
-      addItem(sum, document.getElementById('cat').value);
-      hint.textContent = 'Добавлено: ' + fmt(sum) + ' (услышано: «' + text + '»)';
+      addItem(sum, $('cat').value);
+      $('hint').textContent = L.added + ': ' + fmtSum(sum) + ' (' + L.heard + ': «' + text + '»)';
     } else {
-      hint.textContent = 'Не понял сумму: «' + text + '». Попробуй ещё раз.';
+      $('hint').textContent = L.nope + ': «' + text + '». ' + L.again;
     }
   };
-  rec.onend = () => { mic.classList.remove('rec'); mic.textContent = '🎤 Голос'; };
-  rec.onerror = () => { hint.textContent = 'Ошибка микрофона. Проверь разрешение в Safari.'; };
-  mic.onclick = () => {
-    if (mic.classList.contains('rec')) { rec.stop(); return; }
-    mic.classList.add('rec');
-    mic.textContent = '⏹ Слушаю...';
+  rec.onend = () => { $('mic').classList.remove('rec'); $('mic').textContent = t().voice; };
+  rec.onerror = () => { $('hint').textContent = t().micErr; };
+  $('mic').onclick = () => {
+    if ($('mic').classList.contains('rec')) { rec.stop(); return; }
+    rec.lang = t().sr;
+    $('mic').classList.add('rec');
+    $('mic').textContent = t().stop;
     rec.start();
   };
 }
 
-render();
+applyLang();
+if (!SR) $('hint').textContent = t().noSR;
 </script>
 </body>
 </html>
