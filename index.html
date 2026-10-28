@@ -8,111 +8,112 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Expenses">
 <meta name="theme-color" content="#000000">
-<title>Expenses v0.4.2</title>
+<title>Expenses v0.5.0</title>
 <style>
+:root {--bg:#000;--card:#1c1c1e;--card2:#242426;--line:#2c2c2f;--green:#68d18a;--greenbg:#223a2b;--mut:#9a9aa0;--red:#ff6b6b;}
 * {box-sizing: border-box;-webkit-tap-highlight-color: transparent;}
-html {background: #050507;}
-body::before {content: '';position: fixed;inset: 0;z-index: -1;background:radial-gradient(circle at 20% 10%, rgba(120,20,45,.25), transparent 40%),radial-gradient(circle at 80% 60%, rgba(40,60,120,.18), transparent 45%),#050507;}
-body {font-family: -apple-system, Helvetica, Arial, sans-serif;margin: 0;padding: 16px;padding-top: calc(16px + env(safe-area-inset-top));padding-bottom: calc(24px + env(safe-area-inset-bottom));min-height: 100vh;color: #fff;}
-.top {display: flex;justify-content: space-between;align-items: center;margin-bottom: 12px;position: relative;}
-h1 {font-size: 24px;margin: 0;color: #a3263f;font-weight: 700;}
-.card {background: rgba(255,255,255,.07);border: 1px solid rgba(255,255,255,.08);-webkit-backdrop-filter: blur(20px);backdrop-filter: blur(20px);border-radius: 22px;padding: 14px;margin-bottom: 14px;}
-button {font-size: 17px;border: 0;border-radius: 16px;padding: 12px 16px;color: #fff;background: linear-gradient(180deg, #8a1f38, #5e1426);box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 2px 8px rgba(0,0,0,.4);font-family: inherit;}
-button:active {opacity: .8;}
-button.lang {font-size: 16px;font-weight: 600;padding: 9px 16px;border-radius: 16px;display: flex;align-items: center;gap: 8px;}
-button.lang svg {width: 22px;height: 22px;}
-.topright {display: flex;align-items: center;gap: 8px;}
-button.brand {cursor: default;position: relative;overflow: hidden;isolation: isolate;display: flex;align-items: center;gap: 8px;font-weight: 700;}
-button.brand::after {content: '';position: absolute;top: -50%;left: -30%;width: 40%;height: 200%;background: linear-gradient(120deg,transparent 0%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.6) 70%,transparent 100%);transform: rotate(15deg);animation: shine 2.2s infinite;z-index: 1;}
+html {background: var(--bg);}
+body {font-family: -apple-system, Helvetica, Arial, sans-serif;margin: 0;padding: 16px;padding-top: calc(16px + env(safe-area-inset-top));padding-bottom: calc(120px + env(safe-area-inset-bottom));min-height: 100vh;color: #fff;background: var(--bg);}
+.top {display: flex;justify-content: space-between;align-items: center;margin-bottom: 14px;}
+h1 {font-size: 26px;margin: 0;color: #fff;font-weight: 700;}
+.card {background: var(--card);border: 1px solid var(--line);border-radius: 24px;padding: 16px;margin-bottom: 14px;}
+button {font-size: 17px;border: 0;border-radius: 16px;padding: 12px 16px;color: #08140c;font-weight: 700;background: var(--green);font-family: inherit;}
+button:active {opacity: .75;}
+button.brand {cursor: default;position: relative;overflow: hidden;isolation: isolate;display: flex;align-items: center;gap: 8px;font-size: 15px;padding: 8px 14px;color: #fff;background: var(--greenbg);border: 1px solid var(--line);}
+button.brand svg {width: 20px;height: 20px;}
+button.brand::after {content: '';position: absolute;top: -50%;left: -30%;width: 40%;height: 200%;background: linear-gradient(120deg,transparent 0%,rgba(255,255,255,.1) 50%,rgba(255,255,255,.4) 70%,transparent 100%);transform: rotate(15deg);animation: shine 2.2s infinite;z-index: 1;}
 button.brand span,button.brand svg {position: relative;z-index: 2;}
 @keyframes shine {0% { left: -40% }60% { left: 130% }100% { left: 130% }}
-button.globe {font-size: 20px;padding: 9px 12px;border-radius: 16px;line-height: 1;}
-button.globe.spin {animation: spin 0.8s cubic-bezier(.34,1.56,.64,1);}
-@keyframes spin {0% { transform: rotate(0deg) scale(1) }30% { transform: rotate(180deg) scale(1.15) }100% { transform: rotate(360deg) scale(1) }}
-button.info {width: 38px;height: 38px;padding: 0;border-radius: 50%;font-size: 18px;font-weight: 800;background: rgba(255,255,255,.12);border: 1px solid rgba(255,255,255,.15);display: flex;align-items: center;justify-content: center;}
-button.gray {background: linear-gradient(180deg, #7a1b32, #4d1020);font-size: 16px;padding: 14px 12px;border-radius: 16px;}
-button.add {font-size: 19px;}
-input, select {font-size: 17px;padding: 12px;width: 100%;margin-bottom: 8px;color: #fff;font-family: inherit;background: rgba(255,255,255,.08);border: 1px solid rgba(255,255,255,.25);border-radius: 14px;outline: none;}
-input::placeholder {color: rgba(255,255,255,.5);}
+button.gray {background: var(--card2);color: #fff;border: 1px solid var(--line);font-size: 16px;padding: 14px 12px;font-weight: 600;}
+button.add {font-size: 18px;}
+button.del {font-size: 14px;padding: 8px 12px;border-radius: 12px;background: var(--greenbg);color: var(--green);}
+input, select {font-size: 17px;padding: 13px;width: 100%;margin-bottom: 8px;color: #fff;font-family: inherit;background: var(--card2);border: 1px solid var(--line);border-radius: 14px;outline: none;}
+input:focus, select:focus {border-color: var(--green);}
+input::placeholder {color: rgba(255,255,255,.4);}
 select option {color: #000;}
-label {display: block;font-size: 13px;color: rgba(255,255,255,.6);margin: 2px 0 4px 4px;}
+label {display: block;font-size: 12px;color: var(--mut);margin: 2px 0 4px 4px;letter-spacing: .5px;text-transform: uppercase;}
 .row {display: flex;gap: 8px;}
 .row > * {flex: 1;min-width: 0;}
 input[type=date] {-webkit-appearance: none;appearance: none;min-width: 0;max-width: 100%;height: 50px;text-align: center;display: block;}
 input[type=date]::-webkit-date-and-time-value {text-align: center;min-height: 1.2em;}
-.row select {margin-bottom: 0;}
-.row input {margin-bottom: 0;}
+.row select, .row input {margin-bottom: 0;}
 table {width: 100%;border-collapse: collapse;}
-th, td {text-align: left;padding: 10px 4px;border-bottom: 1px solid rgba(163,38,63,.45);font-size: 14px;vertical-align: middle;}
-th {color: rgba(255,255,255,.6);font-weight: 600;font-size: 15px;}
-th:first-child {color: #fff;}
+th, td {text-align: left;padding: 11px 4px;border-bottom: 1px solid var(--line);font-size: 14px;vertical-align: middle;}
+th {color: var(--mut);font-weight: 600;font-size: 12px;text-transform: uppercase;letter-spacing: .5px;}
 td.sum, th.sum {text-align: right;white-space: nowrap;}
-td.dt {white-space: nowrap;font-size: 13px;color: #fff;}
+td.dt {white-space: nowrap;font-size: 13px;color: var(--mut);}
 .total {font-size: 26px;font-weight: 800;text-align: right;margin-top: 10px;}
-.total span {color: #a3263f;}
-.month {font-size: 17px;font-weight: 600;text-align: right;margin-top: 8px;color: rgba(255,255,255,.7);}
-.month span {color: #8a1f38;}
-button.del {font-size: 14px;padding: 7px 12px;border-radius: 12px;}
-.author {text-align: center;color: rgba(255,255,255,.55);font-size: 14px;margin: 10px 0 0;}
-.author a {color: rgba(255,255,255,.55);}
+.total span {color: var(--green);}
+.month {font-size: 17px;font-weight: 600;text-align: right;margin-top: 8px;color: var(--mut);}
+.month span {color: #fff;}
+.author {text-align: center;color: var(--mut);font-size: 14px;margin: 10px 0 0;}
+.author a {color: var(--mut);}
 .footer-ver {display: flex;justify-content: center;margin-top: 12px;}
-.ver {font-size: 12px;color: rgba(255,255,255,.45);border: 1px solid rgba(255,255,255,.12);padding: 5px 14px;border-radius: 20px;background: rgba(255,255,255,.06);}
-.langmenu {display: none;position: absolute;right: 0;top: 52px;background: rgba(30,30,34,.95);-webkit-backdrop-filter: blur(20px);backdrop-filter: blur(20px);border: 1px solid rgba(255,255,255,.1);border-radius: 16px;box-shadow: 0 8px 30px rgba(0,0,0,.6);overflow: hidden;z-index: 10;}
-.langmenu button {display: block;width: 100%;background: transparent;box-shadow: none;color: #fff;border-radius: 0;border-bottom: 1px solid rgba(255,255,255,.08);text-align: left;}
-.langmenu button .flag {display: inline-block;animation: wind 1.8s ease-in-out infinite;transform-origin: 0% 50%;}
-@keyframes wind {0%,100% { transform: skewX(0deg) translateX(0) }25% { transform: skewX(-6deg) translateX(1px) }50% { transform: skewX(4deg) translateX(-1px) }75% { transform: skewX(-3deg) }}
-.clock {text-align: center;font-size: 18px;font-weight: 600;color: rgba(255,255,255,.7);margin: 0 0 14px;font-variant-numeric: tabular-nums;}
-.arch-row {display: flex;justify-content: space-between;padding: 12px 4px;border-bottom: 1px solid rgba(255,255,255,.15);font-size: 16px;}
-.arch-row b {font-variant-numeric: tabular-nums;color: #a3263f;}
-.arch-title {font-size: 18px;font-weight: 700;margin: 0 0 8px;}
-.bar {height: 12px;border-radius: 8px;background: rgba(255,255,255,.12);overflow: hidden;margin: 10px 0 8px;}
-.bar i {display: block;height: 100%;width: 0;background: #2ea44f;transition: width .3s;}
-.limtxt {font-size: 14px;font-weight: 600;}
-.card.lim {padding: 10px 12px;border-radius: 18px;margin-bottom: 10px;}
-.lim .arch-title {font-size: 15px;margin: 0 0 4px;}
-.lim .bar {height: 8px;margin: 6px 0;}
-.lim .warn {font-size: 12px;padding: 6px 10px;margin-top: 6px;border-radius: 12px;}
-.lim .row {margin-top: 8px !important;}
-.lim input {font-size: 15px;padding: 8px 10px;border-radius: 12px;}
-.lim button.gray {font-size: 14px;padding: 8px 10px;border-radius: 12px;}
+.ver {font-size: 12px;color: var(--mut);border: 1px solid var(--line);padding: 5px 14px;border-radius: 20px;background: var(--card);}
+.clock {text-align: center;font-size: 18px;font-weight: 600;color: var(--mut);margin: 0 0 14px;font-variant-numeric: tabular-nums;}
+.arch-row {display: flex;justify-content: space-between;padding: 13px 4px;border-bottom: 1px solid var(--line);font-size: 16px;}
+.arch-row b {font-variant-numeric: tabular-nums;color: var(--green);}
+.arch-title {font-size: 13px;font-weight: 700;margin: 0 0 10px;color: var(--mut);letter-spacing: 1px;text-transform: uppercase;}
+.bar {height: 10px;border-radius: 8px;background: var(--card2);overflow: hidden;margin: 10px 0 8px;}
+.bar i {display: block;height: 100%;width: 0;background: var(--green);transition: width .3s;border-radius: 8px;}
+.limtxt {font-size: 20px;font-weight: 700;}
 .warn {display: none;margin-top: 8px;padding: 10px 12px;border-radius: 14px;font-size: 14px;font-weight: 600;}
-.warn.l1 {display: block;background: rgba(230,160,20,.25);border: 1px solid #e6a014;}
-.warn.l2 {display: block;background: rgba(220,40,40,.28);border: 1px solid #dc2828;}
-.debt {padding: 10px 4px;border-bottom: 1px solid rgba(255,255,255,.15);display: flex;justify-content: space-between;align-items: center;gap: 8px;}
-.debt .nm {font-size: 16px;font-weight: 600;}
-.debt .nm b {color: #a3263f;font-variant-numeric: tabular-nums;}
-.debt .dd {font-size: 13px;color: rgba(255,255,255,.65);margin-top: 3px;}
-.debt .late {color: #ff6b6b;font-weight: 700;}
+.warn.l1 {display: block;background: rgba(230,160,20,.2);border: 1px solid #e6a014;}
+.warn.l2 {display: block;background: rgba(220,40,40,.22);border: 1px solid #dc2828;}
+.sums {display: flex;gap: 10px;margin-bottom: 14px;}
+.sumc {flex: 1;background: var(--card);border: 1px solid var(--line);border-radius: 22px;padding: 14px;min-width: 0;}
+.sumc .ic {width: 38px;height: 38px;border-radius: 12px;background: var(--greenbg);display: flex;align-items: center;justify-content: center;font-size: 18px;margin-bottom: 10px;color: var(--green);}
+.sumc .ic.r {background: #3a2222;color: var(--red);}
+.sumc .l {font-size: 14px;color: var(--mut);font-weight: 600;}
+.sumc .v {font-size: 22px;font-weight: 800;color: var(--green);margin-top: 2px;white-space: nowrap;}
+.sumc .v.r {color: var(--red);}
+.sumc .s {font-size: 13px;color: var(--mut);margin-top: 2px;}
+.dc {background: var(--card);border: 1px solid var(--line);border-radius: 22px;padding: 16px;margin-bottom: 12px;}
+.dc .h {display: flex;justify-content: space-between;align-items: center;gap: 8px;}
+.dc .n {font-size: 22px;font-weight: 700;}
+.dc .badge {background: var(--greenbg);color: var(--green);font-weight: 700;font-size: 14px;padding: 5px 10px;border-radius: 12px;white-space: nowrap;}
+.dc .sub {font-size: 15px;color: var(--mut);margin-top: 6px;}
+.dc .sub .late {color: var(--red);font-weight: 700;}
+.dc .pb {height: 10px;border-radius: 8px;background: var(--card2);overflow: hidden;margin: 12px 0 10px;}
+.dc .pb i {display: block;height: 100%;background: var(--green);border-radius: 8px;}
+.dc .pb i.r {background: var(--red);}
+.dc .f {display: flex;justify-content: space-between;align-items: center;color: var(--mut);font-size: 14px;}
+button.wide {width: 100%;background: var(--greenbg);color: var(--green);border: 1px solid var(--line);margin-bottom: 14px;}
+.tab {display: none;}
+.tab.active {display: block;}
+.nav {position: fixed;left: 14px;right: 14px;bottom: calc(12px + env(safe-area-inset-bottom));background: rgba(28,28,30,.92);-webkit-backdrop-filter: blur(20px);backdrop-filter: blur(20px);border: 1px solid var(--line);border-radius: 32px;display: flex;padding: 6px;z-index: 50;}
+.nav button {flex: 1;background: transparent;color: var(--mut);border: 1px solid transparent;border-radius: 26px;padding: 8px 2px;font-size: 11px;font-weight: 700;display: flex;flex-direction: column;align-items: center;gap: 3px;min-width: 0;}
+.nav button svg {width: 24px;height: 24px;fill: none;stroke: currentColor;stroke-width: 1.8;stroke-linecap: round;stroke-linejoin: round;}
+.nav button.on {background: var(--greenbg);color: var(--green);border-color: #2f5a3d;}
+.nav button span {max-width: 100%;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.langs {display: flex;gap: 8px;}
+.langs button {flex: 1;background: var(--card2);color: #fff;border: 1px solid var(--line);font-size: 15px;padding: 12px 6px;font-weight: 600;}
+.langs button.on {background: var(--greenbg);color: var(--green);border-color: #2f5a3d;}
+.prow {display: flex;justify-content: space-between;align-items: center;padding: 4px 0;font-size: 17px;font-weight: 600;width: 100%;background: transparent;color: #fff;border-radius: 0;text-align: left;}
 .modal {display: none;position: fixed;inset: 0;background: rgba(0,0,0,.7);-webkit-backdrop-filter: blur(8px);backdrop-filter: blur(8px);z-index: 100;align-items: center;justify-content: center;padding: 20px;}
 .modal.open {display: flex;}
-.modalbox {background: linear-gradient(180deg,#1c1c22,#101014);border: 1px solid rgba(255,255,255,.12);border-radius: 20px;padding: 20px;max-width: 420px;width: 100%;box-shadow: 0 20px 50px rgba(0,0,0,.6);}
+.modalbox {background: var(--card);border: 1px solid var(--line);border-radius: 24px;padding: 20px;max-width: 420px;width: 100%;}
 .modalbox h3 {margin: 0 0 10px;font-size: 18px;color: #fff;}
 .modalbox p {font-size: 14px;line-height: 1.5;color: rgba(255,255,255,.75);margin: 8px 0;}
 .modalbox .ok {width: 100%;margin-top: 12px;}
-#err {display: none;background: #4a1018;border: 1px solid #a33;border-radius: 14px;padding: 10px;margin-bottom: 12px;font-size: 13px;}
+#err {display: none;background: #3a1414;border: 1px solid #a33;border-radius: 14px;padding: 10px;margin-bottom: 12px;font-size: 13px;}
 </style>
 </head>
 <body>
 <div id="err"></div>
 <div class="top">
 <h1 id="title"></h1>
-<div class="topright">
-<button class="lang brand" id="brandBtn"></button>
-<button class="globe" id="langBtn">🌐</button>
-<button class="info" id="infoBtn">i</button>
+<button class="brand" id="brandBtn"></button>
 </div>
-<div class="langmenu" id="langMenu">
-<button data-l="ru"><span class="flag">🇷🇺</span> Русский</button>
-<button data-l="kk"><span class="flag">🇰🇿</span> Қазақша</button>
-<button data-l="zh"><span class="flag">🇨🇳</span> 中文</button>
-</div>
-</div>
-<div class="card lim">
+
+<div class="tab active" id="tab-home">
+<div class="clock" id="clock"></div>
+<div class="card">
 <p class="arch-title" id="limTitle"></p>
 <div class="limtxt" id="limTxt"></div>
 <div class="bar"><i id="limBar"></i></div>
 <div class="warn" id="limWarn"></div>
-<div class="row" style="margin-top:10px">
+<div class="row" style="margin-top:12px">
 <input id="limIn" type="number" inputmode="numeric">
 <button class="gray" id="limSave"></button>
 </div>
@@ -124,17 +125,36 @@ button.del {font-size: 14px;padding: 7px 12px;border-radius: 12px;}
 <button class="add" id="add"></button>
 </div>
 </div>
-<div class="clock" id="clock"></div>
+</div>
+
+<div class="tab" id="tab-fin">
+<div class="card">
+<div class="month" id="month" style="margin-top:0"></div>
+<div class="total" id="total"></div>
+</div>
+<div class="card">
+<p class="arch-title" id="archTitle"></p>
+<div id="archive"></div>
+</div>
+</div>
+
+<div class="tab" id="tab-ops">
 <div class="card">
 <table>
 <thead><tr><th id="thDate"></th><th id="thCat"></th><th class="sum" id="thSum"></th><th></th></tr></thead>
 <tbody id="rows"></tbody>
 </table>
-<div class="month" id="month"></div>
-<div class="total" id="total"></div>
 </div>
-<div class="card">
-<p class="arch-title" id="debtTitle"></p>
+</div>
+
+<div class="tab" id="tab-debts">
+<div class="sums">
+<div class="sumc"><div class="ic">↙</div><div class="l" id="sOwedL"></div><div class="v" id="sOwedV"></div><div class="s" id="sOwedS"></div></div>
+<div class="sumc"><div class="ic r">!</div><div class="l" id="sLateL"></div><div class="v r" id="sLateV"></div><div class="s" id="sLateS"></div></div>
+</div>
+<div id="debts"></div>
+<button class="wide" id="dToggle"></button>
+<div class="card" id="dForm" style="display:none">
 <input id="dName" type="text">
 <input id="dAmt" type="number" inputmode="numeric">
 <div class="row" style="margin-bottom:8px">
@@ -142,12 +162,20 @@ button.del {font-size: 14px;padding: 7px 12px;border-radius: 12px;}
 <div><label id="lRet"></label><input id="dRet" type="date"></div>
 </div>
 <button class="add" id="dAdd" style="width:100%"></button>
-<div id="debts"></div>
-<div class="total" id="dTotal"></div>
+</div>
+</div>
+
+<div class="tab" id="tab-prof">
+<div class="card">
+<p class="arch-title" id="langTitle"></p>
+<div class="langs" id="langs">
+<button data-l="ru">🇷🇺 Русский</button>
+<button data-l="kk">🇰🇿 Қазақша</button>
+<button data-l="zh">🇨🇳 中文</button>
+</div>
 </div>
 <div class="card">
-<p class="arch-title" id="archTitle"></p>
-<div id="archive"></div>
+<button class="prow" id="infoBtn"><span id="infoRow"></span><span>›</span></button>
 </div>
 <div class="card">
 <div class="row">
@@ -158,7 +186,17 @@ button.del {font-size: 14px;padding: 7px 12px;border-radius: 12px;}
 </div>
 <p class="author" id="author"></p>
 <p class="author"><a href="https://instagram.com/duisembaev_16" target="_blank" rel="noopener">📷 Instagram: @duisembaev_16</a></p>
-<div class="footer-ver"><span class="ver">v0.4.2</span></div>
+<div class="footer-ver"><span class="ver">v0.5.0</span></div>
+</div>
+
+<div class="nav" id="nav">
+<button data-t="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></svg><span id="nHome"></span></button>
+<button data-t="fin"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.6-1-1.7-1.5-3-1.5-1.7 0-3 .8-3 2s1.3 1.8 3 2 3 .8 3 2-1.3 2-3 2c-1.3 0-2.4-.5-3-1.5M12 6v2M12 16v2"/></svg><span id="nFin"></span></button>
+<button data-t="ops"><svg viewBox="0 0 24 24"><path d="M4 8h15M15 4l4 4-4 4M20 16H5M9 12l-4 4 4 4"/></svg><span id="nOps"></span></button>
+<button data-t="debts"><svg viewBox="0 0 24 24"><path d="M4 7h14a2 2 0 012 2v9a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h11M16 14h4"/></svg><span id="nDebts"></span></button>
+<button data-t="prof"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"/></svg><span id="nProf"></span></button>
+</div>
+
 <div class="modal" id="infoModal">
 <div class="modalbox">
 <h3 id="infoTitle"></h3>
@@ -173,12 +211,15 @@ const KEY = 'expenses_v2';
 const OLD_KEY = 'expenses_v1';
 const DKEY = 'debts_v1';
 const LKEY = 'limit_v1';
-const LOGO = '<svg viewBox="0 0 24 24" fill="#fff"><path d="M1 20 L9 6 L14 14 L16.5 10 L23 20 Z"/><path d="M9 6 L11.2 9.8 L9 8.6 L6.8 9.8 Z" fill="#8a1f38"/></svg>';
+const LOGO = '<svg viewBox="0 0 24 24" fill="#fff"><path d="M1 20 L9 6 L14 14 L16.5 10 L23 20 Z"/><path d="M9 6 L11.2 9.8 L9 8.6 L6.8 9.8 Z" fill="#68d18a"/></svg>';
 const CATS = ['food','transport','fuel','cafe','home','phone','health','pharmacy','clothes','fun','cinema','sport','gifts','education','subs','beauty','kids','pets','travel','taxes','other'];
 const ICONS = { food:'🛒', transport:'🚗', fuel:'⛽', cafe:'🍽️', home:'🏠', phone:'📱', health:'🩺', pharmacy:'💊', clothes:'👕', fun:'🎮', cinema:'🎬', sport:'🏋️', gifts:'🎁', education:'📚', subs:'🔁', beauty:'💄', kids:'🧸', pets:'🐾', travel:'✈️', taxes:'🧾', other:'📦' };
 const T = {
 ru: {
 title: 'Расходы, ₸',
+nHome: 'Главная', nFin: 'Финансы', nOps: 'Операции', nDebts: 'Долги', nProf: 'Профиль',
+langTitle: 'Язык',
+infoRow: '🔒 Приватность и данные',
 amount: 'Сумма в тенге',
 add: 'Добавить',
 date: 'Дата и время',
@@ -207,24 +248,31 @@ limLeft: 'Осталось',
 limOf: 'из',
 limLow: '⚠️ Осталось мало денег из лимита!',
 limOver: '⛔ Лимит исчерпан! Превышение:',
-dTitle: '🤝 Должники',
 dName: 'Имя должника',
 dAmt: 'Сумма долга, ₸',
 dTaken: 'Когда взял',
 dRet: 'Когда вернёт',
 dAdd: 'Добавить должника',
+dToggle: '+ Добавить долг',
 dDone: 'Вернул',
 dConfirm: 'Должник вернул деньги? Запись будет удалена.',
 dTotal: 'Мне должны',
-dLate: 'просрочено',
-dTo: 'вернуть до',
-dTook: 'взял',
+dLate: 'Просрочено',
+dPpl: 'чел.',
+dCnt: 'долгов',
+dLeft: 'Осталось',
+dDay: 'дн.',
+dWill: 'вернёт',
+dNoDate: 'Срок не указан',
 dNeed: 'Укажи имя и сумму.',
 cats: { food:'Продукты', transport:'Транспорт', fuel:'Заправка', cafe:'Кафе и рестораны', home:'Жильё', phone:'Связь', health:'Здоровье', pharmacy:'Аптека', clothes:'Одежда', fun:'Развлечения', cinema:'Кино', sport:'Спорт', gifts:'Подарки', education:'Образование', subs:'Подписки', beauty:'Красота и уход', kids:'Дети', pets:'Питомцы', travel:'Путешествия', taxes:'Налоги и платежи', other:'Прочее' },
 loc: 'ru-RU'
 },
 kk: {
 title: 'Шығындар, ₸',
+nHome: 'Басты', nFin: 'Қаржы', nOps: 'Операция', nDebts: 'Қарыз', nProf: 'Профиль',
+langTitle: 'Тіл',
+infoRow: '🔒 Құпиялылық',
 amount: 'Сома (теңге)',
 add: 'Қосу',
 date: 'Күні мен уақыты',
@@ -253,24 +301,31 @@ limLeft: 'Қалды',
 limOf: '/',
 limLow: '⚠️ Лимиттен ақша аз қалды!',
 limOver: '⛔ Лимит таусылды! Артық:',
-dTitle: '🤝 Қарыздар',
 dName: 'Қарыздардың аты',
 dAmt: 'Қарыз сомасы, ₸',
 dTaken: 'Алған күні',
 dRet: 'Қайтару күні',
 dAdd: 'Қарызды қосу',
+dToggle: '+ Қарыз қосу',
 dDone: 'Қайтарды',
 dConfirm: 'Қарыз қайтарылды ма? Жазба жойылады.',
 dTotal: 'Маған қарыз',
-dLate: 'мерзімі өтті',
-dTo: 'дейін қайтару',
-dTook: 'алды',
+dLate: 'Мерзімі өтті',
+dPpl: 'адам',
+dCnt: 'қарыз',
+dLeft: 'Қалды',
+dDay: 'күн',
+dWill: 'қайтарады',
+dNoDate: 'Мерзімі жоқ',
 dNeed: 'Аты мен соманы жазыңыз.',
 cats: { food:'Тағам', transport:'Көлік', fuel:'Жанармай', cafe:'Кафе', home:'Үй', phone:'Байланыс', health:'Денсаулық', pharmacy:'Дәріхана', clothes:'Киім', fun:'Демалыс', cinema:'Кино', sport:'Спорт', gifts:'Сыйлық', education:'Білім', subs:'Жазылым', beauty:'Сұлулық', kids:'Балалар', pets:'Үй жануары', travel:'Саяхат', taxes:'Салық', other:'Басқа' },
 loc: 'kk-KZ'
 },
 zh: {
 title: '支出, ₸',
+nHome: '首页', nFin: '财务', nOps: '记录', nDebts: '欠款', nProf: '我的',
+langTitle: '语言',
+infoRow: '🔒 隐私',
 amount: '金额（坚戈）',
 add: '添加',
 date: '日期和时间',
@@ -299,18 +354,22 @@ limLeft: '剩余',
 limOf: '/',
 limLow: '⚠️ 限额所剩不多！',
 limOver: '⛔ 限额已用完！超出：',
-dTitle: '🤝 欠款人',
 dName: '欠款人姓名',
 dAmt: '欠款金额, ₸',
 dTaken: '借款日期',
 dRet: '还款日期',
 dAdd: '添加欠款人',
+dToggle: '+ 添加欠款',
 dDone: '已还',
 dConfirm: '对方已还钱？记录将被删除。',
 dTotal: '别人欠我',
 dLate: '已逾期',
-dTo: '还款期限',
-dTook: '借于',
+dPpl: '人',
+dCnt: '笔',
+dLeft: '剩余',
+dDay: '天',
+dWill: '还款日',
+dNoDate: '未设期限',
 dNeed: '请填写姓名和金额。',
 cats: { food:'食品', transport:'交通', fuel:'加油', cafe:'餐厅', home:'住房', phone:'通讯', health:'健康', pharmacy:'药店', clothes:'服装', fun:'娱乐', cinema:'电影', sport:'运动', gifts:'礼物', education:'教育', subs:'订阅', beauty:'美容', kids:'孩子', pets:'宠物', travel:'旅行', taxes:'税费', other:'其他' },
 loc: 'zh-CN'
@@ -386,9 +445,15 @@ function todayStr() {
   const d = new Date();
   return d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate());
 }
-function fmtD(s) {
+function dayNum(s) {
   const p = String(s).split('-');
-  return p.length === 3 ? p[2] + '.' + p[1] + '.' + p[0].slice(2) : '—';
+  if (p.length !== 3) return NaN;
+  return Math.round(Date.UTC(+p[0], +p[1] - 1, +p[2]) / 86400000);
+}
+function fmtLong(s) {
+  const p = String(s).split('-');
+  if (p.length !== 3) return '—';
+  try { return new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString(T[lang].loc, { day: 'numeric', month: 'long' }); } catch (e) { return p[2] + '.' + p[1]; }
 }
 
 function monthSpent() {
@@ -417,7 +482,7 @@ function renderLimit() {
   }
   txt.textContent = t.limLeft + ': ' + fmt(Math.max(s.left, 0)) + ' ' + t.limOf + ' ' + fmt(s.lim);
   bar.style.width = Math.min(100, (s.lim - s.left) / s.lim * 100) + '%';
-  bar.style.background = s.lvl === 2 ? '#dc2828' : s.lvl === 1 ? '#e6a014' : '#2ea44f';
+  bar.style.background = s.lvl === 2 ? '#dc2828' : s.lvl === 1 ? '#e6a014' : '#68d18a';
   if (s.lvl === 1) { w.className = 'warn l1'; w.textContent = t.limLow; }
   if (s.lvl === 2) { w.className = 'warn l2'; w.textContent = t.limOver + ' ' + fmt(-s.left); }
 }
@@ -427,6 +492,13 @@ function setText() {
   document.documentElement.lang = lang;
   $('title').textContent = t.title;
   $('brandBtn').innerHTML = LOGO + '<span>Alpin</span>';
+  $('nHome').textContent = t.nHome;
+  $('nFin').textContent = t.nFin;
+  $('nOps').textContent = t.nOps;
+  $('nDebts').textContent = t.nDebts;
+  $('nProf').textContent = t.nProf;
+  $('langTitle').textContent = t.langTitle;
+  $('infoRow').textContent = t.infoRow;
   $('amount').placeholder = t.amount;
   $('add').textContent = t.add;
   $('thDate').textContent = t.date;
@@ -443,12 +515,13 @@ function setText() {
   $('limTitle').textContent = t.limTitle;
   $('limIn').placeholder = t.limPh;
   $('limSave').textContent = t.limSave;
-  $('debtTitle').textContent = t.dTitle;
   $('dName').placeholder = t.dName;
   $('dAmt').placeholder = t.dAmt;
   $('lTaken').textContent = t.dTaken;
   $('lRet').textContent = t.dRet;
   $('dAdd').textContent = t.dAdd;
+  $('dToggle').textContent = t.dToggle;
+  document.querySelectorAll('#langs button').forEach(b => b.classList.toggle('on', b.dataset.l === lang));
   const sel = $('cat'), cur = sel.value || 'food';
   sel.innerHTML = '';
   CATS.forEach(c => {
@@ -460,31 +533,54 @@ function setText() {
 }
 
 function renderDebts() {
-  const t = T[lang], list = loadD(), box = $('debts'), today = todayStr();
+  const t = T[lang], list = loadD(), box = $('debts'), today = todayStr(), tn = dayNum(today);
   box.innerHTML = '';
-  let sum = 0;
+  let sum = 0, lateN = 0, lateS = 0;
   list.sort((a, b) => (a.ret || '9999').localeCompare(b.ret || '9999'));
   list.forEach(d => {
     sum += d.amount;
     const late = d.ret && d.ret < today;
-    const r = document.createElement('div'); r.className = 'debt';
-    const l = document.createElement('div'); l.className = 'nm';
-    const nm = document.createElement('span'); nm.textContent = d.name + ' — ';
-    const am = document.createElement('b'); am.textContent = fmt(d.amount);
-    l.appendChild(nm); l.appendChild(am);
-    const dd = document.createElement('div'); dd.className = 'dd';
-    dd.textContent = t.dTook + ' ' + fmtD(d.taken) + ' · ' + t.dTo + ' ' + fmtD(d.ret);
-    if (late) {
-      const lt = document.createElement('span'); lt.className = 'late'; lt.textContent = ' · ' + t.dLate;
-      dd.appendChild(lt);
+    if (late) { lateN++; lateS += d.amount; }
+    const c = document.createElement('div'); c.className = 'dc';
+    const h = document.createElement('div'); h.className = 'h';
+    const n = document.createElement('div'); n.className = 'n'; n.textContent = d.name;
+    const bd = document.createElement('div'); bd.className = 'badge'; bd.textContent = fmt(d.amount);
+    h.appendChild(n); h.appendChild(bd);
+    const sub = document.createElement('div'); sub.className = 'sub';
+    let pct = 0;
+    if (d.ret) {
+      const rn = dayNum(d.ret), left = rn - tn;
+      if (late) {
+        sub.innerHTML = '';
+        const sp = document.createElement('span'); sp.className = 'late'; sp.textContent = t.dLate + ' ' + (-left) + ' ' + t.dDay;
+        sub.appendChild(sp);
+        sub.appendChild(document.createTextNode(' · ' + t.dWill + ' ' + fmtLong(d.ret)));
+        pct = 100;
+      } else {
+        sub.textContent = t.dLeft + ' ' + left + ' ' + t.dDay + ' · ' + t.dWill + ' ' + fmtLong(d.ret);
+        const tk = dayNum(d.taken);
+        if (isFinite(tk) && rn > tk) pct = Math.max(0, Math.min(100, (tn - tk) / (rn - tk) * 100));
+      }
+    } else {
+      sub.textContent = t.dNoDate;
     }
-    l.appendChild(dd);
+    const pb = document.createElement('div'); pb.className = 'pb';
+    const pi = document.createElement('i'); pi.style.width = pct + '%'; if (late) pi.className = 'r';
+    pb.appendChild(pi);
+    const f = document.createElement('div'); f.className = 'f';
+    const fs = document.createElement('span'); fs.textContent = fmt(d.amount);
     const b = document.createElement('button'); b.className = 'del'; b.textContent = t.dDone;
     b.onclick = () => { if (confirm(t.dConfirm)) { saveD(loadD().filter(x => x.id !== d.id)); renderDebts(); } };
-    r.appendChild(l); r.appendChild(b);
-    box.appendChild(r);
+    f.appendChild(fs); f.appendChild(b);
+    c.appendChild(h); c.appendChild(sub); c.appendChild(pb); c.appendChild(f);
+    box.appendChild(c);
   });
-  $('dTotal').innerHTML = t.dTotal + ': <span>' + fmt(sum) + '</span>';
+  $('sOwedL').textContent = t.dTotal;
+  $('sOwedV').textContent = fmt(sum);
+  $('sOwedS').textContent = list.length + ' ' + t.dPpl;
+  $('sLateL').textContent = t.dLate;
+  $('sLateV').textContent = fmt(lateS);
+  $('sLateS').textContent = lateN + ' ' + t.dCnt;
 }
 
 function render() {
@@ -553,6 +649,10 @@ $('limSave').onclick = () => {
 };
 
 $('dTaken').value = todayStr();
+$('dToggle').onclick = () => {
+  const f = $('dForm');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+};
 $('dAdd').onclick = () => {
   const name = $('dName').value.trim(), a = Number($('dAmt').value);
   if (!name || !(a > 0)) { alert(T[lang].dNeed); return; }
@@ -560,17 +660,25 @@ $('dAdd').onclick = () => {
   list.push({ id: 'd' + Date.now() + Math.random().toString(36).slice(2, 6), name: name, amount: a, taken: $('dTaken').value || todayStr(), ret: $('dRet').value || '' });
   saveD(list);
   $('dName').value = ''; $('dAmt').value = ''; $('dRet').value = ''; $('dTaken').value = todayStr();
+  $('dForm').style.display = 'none';
   renderDebts();
 };
 
-$('langBtn').onclick = e => {
-  e.stopPropagation();
-  const g = $('langBtn'); g.classList.remove('spin'); void g.offsetWidth; g.classList.add('spin');
-  const m = $('langMenu'); m.style.display = m.style.display === 'block' ? 'none' : 'block';
-};
-document.addEventListener('click', () => { $('langMenu').style.display = 'none'; });
-document.querySelectorAll('#langMenu button').forEach(b => {
+document.querySelectorAll('#langs button').forEach(b => {
   b.onclick = () => { lang = b.dataset.l; lsSet('lang', lang); setText(); render(); };
+});
+
+function showTab(n) {
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+  const el = $('tab-' + n);
+  if (!el) n = 'home';
+  $('tab-' + n).classList.add('active');
+  document.querySelectorAll('#nav button').forEach(b => b.classList.toggle('on', b.dataset.t === n));
+  lsSet('tab', n);
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll('#nav button').forEach(b => {
+  b.onclick = () => showTab(b.dataset.t);
 });
 
 $('infoBtn').onclick = () => $('infoModal').classList.add('open');
@@ -619,6 +727,7 @@ function tick() {
 
 try { setText(); } catch (e) { showErr('setText: ' + e.message); }
 try { render(); } catch (e) { showErr('render: ' + e.message); }
+showTab(lsGet('tab') || 'home');
 tick(); setInterval(tick, 1000);
 </script>
 </body>
