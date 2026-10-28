@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Expenses">
+<meta name="apple-mobile-web-app-title" content="Расход Альпина">
 <meta name="theme-color" content="#000000">
-<title>Expenses v0.5.2</title>
+<title>Расход Альпина</title>
 <style>
 :root {--bg:#000;--card:#1c1c1e;--card2:#242426;--line:#2c2c2f;--green:#68d18a;--greenbg:#223a2b;--mut:#9a9aa0;--red:#ff6b6b;--pur:#8b7cf6;--purbg:#2a2650;}
 * {box-sizing: border-box;-webkit-tap-highlight-color: transparent;}
@@ -96,6 +96,25 @@ button.wide {width: 100%;background: var(--greenbg);color: var(--green);border: 
 .quote {background: var(--card);border: 1px solid var(--line);border-left: 4px solid var(--green);border-radius: 20px;padding: 16px;margin-top: 16px;}
 .quote p {margin: 0 0 12px;font-size: 15px;line-height: 1.55;color: rgba(255,255,255,.85);}
 .quote p:last-child {margin-bottom: 0;font-weight: 700;color: #fff;}
+.rt-sec {font-size: 12px;font-weight: 700;color: var(--mut);letter-spacing: 1px;text-transform: uppercase;margin: 14px 0 4px 2px;}
+.rt-sec:first-child {margin-top: 0;}
+.rt-row {display: flex;align-items: center;gap: 12px;padding: 11px 0;border-bottom: 1px solid var(--line);}
+.rt-row:last-child {border-bottom: 0;}
+.rt-ic {width: 44px;height: 44px;border-radius: 50%;display: flex;align-items: center;justify-content: center;font-size: 20px;font-weight: 800;flex: none;background: var(--card2);}
+.rt-ic .fl {display: inline-block;transform-origin: 20% 50%;animation: wave 2.2s ease-in-out infinite;}
+@keyframes wave {0%,100% {transform: skewY(0) scaleX(1) rotate(0)}25% {transform: skewY(-9deg) scaleX(.92) rotate(-3deg)}50% {transform: skewY(0) scaleX(1.04) rotate(0)}75% {transform: skewY(9deg) scaleX(.92) rotate(3deg)}}
+@media (prefers-reduced-motion: reduce) {.rt-ic .fl {animation: none}}
+.rt-mid {flex: 1;min-width: 0;}
+.rt-mid b {display: block;font-size: 16px;}
+.rt-mid span {display: block;font-size: 13px;color: var(--mut);margin-top: 2px;}
+.rt-v {text-align: right;font-size: 16px;font-weight: 700;white-space: nowrap;font-variant-numeric: tabular-nums;}
+.rt-v i {display: block;font-style: normal;font-size: 13px;color: var(--green);margin-top: 2px;}
+.made {display: flex;align-items: center;gap: 10px;margin-top: 14px;padding-left: 12px;border-left: 3px solid var(--green);color: var(--mut);font-weight: 600;font-size: 14px;}
+.made .mascot {width: 32px;height: 24px;flex: none;}
+.dev {display: flex;align-items: center;gap: 14px;margin-top: 14px;padding: 16px;border-radius: 24px;border: 1px solid #2f5a3d;background: linear-gradient(135deg, #2a4a35 0%, var(--card) 70%);}
+.dev-av {width: 54px;height: 54px;border-radius: 50%;background: var(--green);color: #08140c;display: flex;align-items: center;justify-content: center;font-size: 19px;font-weight: 800;flex: none;box-shadow: 0 0 0 4px rgba(104,209,138,.18);}
+.dev-t span {display: block;font-size: 12px;font-weight: 700;color: var(--mut);letter-spacing: 1px;text-transform: uppercase;margin-bottom: 4px;}
+.dev-t b {font-size: 20px;font-weight: 800;}
 .tab {display: none;}
 .tab.active {display: block;}
 .nav {position: fixed;left: 14px;right: 14px;bottom: calc(12px + env(safe-area-inset-bottom));background: rgba(28,28,30,.92);-webkit-backdrop-filter: blur(20px);backdrop-filter: blur(20px);border: 1px solid var(--line);border-radius: 32px;display: flex;padding: 6px;z-index: 50;}
@@ -152,6 +171,10 @@ button.wide {width: 100%;background: var(--greenbg);color: var(--green);border: 
 
 <div class="tab" id="tab-fin">
 <div class="card">
+<p class="arch-title" id="rateTitle"></p>
+<div id="rates"></div>
+</div>
+<div class="card">
 <div class="month" id="month" style="margin-top:0"></div>
 <div class="total" id="total"></div>
 </div>
@@ -196,15 +219,23 @@ button.wide {width: 100%;background: var(--greenbg);color: var(--green);border: 
 <button class="prow" id="infoBtn"><span id="infoRow"></span><span>›</span></button>
 </div>
 <div class="card">
+<button class="prow" id="aboutBtn"><span id="aboutRow"></span><span>›</span></button>
+</div>
+<div class="card">
+<button class="prow" id="soundBtn"><span id="soundRow"></span><span id="soundState"></span></button>
+</div>
+<div class="card">
+<button class="add" id="shareBtn" style="width:100%"></button>
+</div>
+<div class="card">
 <div class="row">
 <button class="gray" id="exportBtn"></button>
 <button class="gray" id="importBtn"></button>
 </div>
 <input type="file" id="fileIn" accept=".json,application/json" style="display:none">
 </div>
-<p class="author" id="author"></p>
-<p class="author"><a href="https://instagram.com/duisembaev_16" target="_blank" rel="noopener">📷 Instagram: @duisembaev_16</a></p>
-<div class="footer-ver"><span class="ver">v0.5.2</span></div>
+<div class="dev"><div class="dev-av" id="devAv"></div><div class="dev-t"><span id="devLbl"></span><b id="devName"></b></div></div>
+<div class="footer-ver"><span class="ver">v0.7.0</span></div>
 <div class="quote">
 <p>Классика про тотальный учет. Главная идея: ты меняешь жизненную энергию на деньги, поэтому должен считать каждый расход. Дает таблицу учета всех трат до цента. После нее ты не можешь не считать</p>
 <p>Самое главное Ты не берешь кредит у банка. Ты берешь в долг у самого себя из будущего. И платишь не процентами, а своими будущими днями труда.</p>
@@ -227,6 +258,14 @@ button.wide {width: 100%;background: var(--greenbg);color: var(--green);border: 
 <button class="ok" id="infoOk">OK</button>
 </div>
 </div>
+<div class="modal" id="aboutModal">
+<div class="modalbox">
+<h3 id="aboutTitle"></h3>
+<p id="about1"></p>
+<div class="made"><svg class="mascot" viewBox="0 0 16 12" shape-rendering="crispEdges" aria-hidden="true"><g fill="#d97a3a"><rect x="3" y="1" width="10" height="7"/><rect x="1" y="4" width="2" height="3"/><rect x="13" y="4" width="2" height="3"/><rect x="4" y="8" width="1" height="3"/><rect x="6" y="8" width="1" height="3"/><rect x="9" y="8" width="1" height="3"/><rect x="11" y="8" width="1" height="3"/></g><g fill="#1a1a1a"><rect x="5" y="4" width="1" height="1"/><rect x="6" y="3" width="1" height="1"/><rect x="7" y="4" width="1" height="1"/><rect x="9" y="4" width="1" height="1"/><rect x="10" y="3" width="1" height="1"/><rect x="11" y="4" width="1" height="1"/></g></svg><span id="about2"></span></div>
+<button class="ok" id="aboutOk">OK</button>
+</div>
+</div>
 <script>
 const KEY = 'expenses_v2';
 const OLD_KEY = 'expenses_v1';
@@ -237,10 +276,28 @@ const CATS = ['food','transport','fuel','cafe','home','phone','health','pharmacy
 const ICONS = { food:'🛒', transport:'🚗', fuel:'⛽', cafe:'🍽️', home:'🏠', phone:'📱', health:'🩺', pharmacy:'💊', clothes:'👕', fun:'🎮', cinema:'🎬', sport:'🏋️', gifts:'🎁', education:'📚', subs:'🔁', beauty:'💄', kids:'🧸', pets:'🐾', travel:'✈️', taxes:'🧾', other:'📦' };
 const T = {
 ru: {
-title: 'Расходы, ₸',
+title: 'Расход Альпина',
 nHome: 'Главная', nFin: 'Финансы', nDebts: 'Долги', nProf: 'Профиль',
 langTitle: 'Язык',
 infoRow: '🔒 Приватность и данные',
+soundRow: '🔊 Звук',
+soundOn: 'Вкл',
+soundOff: 'Выкл',
+share: '📤 Поделиться сайтом',
+aboutTitle: 'О Приложении',
+aboutRow: 'ℹ️ О приложении',
+devLbl: 'Разработчик',
+devName: 'Дуйсембаев Ернат',
+devAv: 'ДЕ',
+rateTitle: 'Курсы',
+rSec: { cur: 'Валюты', crypto: 'Крипто', metal: 'Металлы' },
+rUnit: '/г',
+rName: { usd: 'Доллар США', eur: 'Евро', rub: 'Российский рубль', cny: 'Китайский юань', au: 'Золото', ag: 'Серебро', pt: 'Платина', pd: 'Палладий' },
+about1: 'Приложение создано для себя, но некоторым людям оно очень понравилось, поэтому я сделал его публичным.',
+about2: 'Сайт создан с помощью Claude.',
+shareText: 'Расход Альпина — удобный учёт расходов, лимитов и долгов',
+copied: 'Ссылка скопирована!',
+copyManual: 'Скопируйте ссылку:',
 amount: 'Сумма в тенге',
 add: 'Добавить',
 date: 'Дата и время',
@@ -296,10 +353,28 @@ cats: { food:'Продукты', transport:'Транспорт', fuel:'Запр�
 loc: 'ru-RU'
 },
 kk: {
-title: 'Шығындар, ₸',
+title: 'Расход Альпина',
 nHome: 'Басты', nFin: 'Қаржы', nDebts: 'Қарыз', nProf: 'Профиль',
 langTitle: 'Тіл',
 infoRow: '🔒 Құпиялылық',
+soundRow: '🔊 Дыбыс',
+soundOn: 'Қосулы',
+soundOff: 'Өшірулі',
+share: '📤 Сайтпен бөлісу',
+aboutTitle: 'Қосымша туралы',
+aboutRow: 'ℹ️ Қосымша туралы',
+devLbl: 'Әзірлеуші',
+devName: 'Дуйсембаев Ернат',
+devAv: 'ДЕ',
+rateTitle: 'Бағамдар',
+rSec: { cur: 'Валюта', crypto: 'Крипто', metal: 'Металдар' },
+rUnit: '/г',
+rName: { usd: 'АҚШ доллары', eur: 'Еуро', rub: 'Ресей рублі', cny: 'Қытай юані', au: 'Алтын', ag: 'Күміс', pt: 'Платина', pd: 'Палладий' },
+about1: 'Қосымша өзіме арнап жасалған, бірақ кейбір адамдарға өте ұнады, сондықтан оны жария еттім.',
+about2: 'Сайт Claude көмегімен жасалды.',
+shareText: 'Расход Альпина — шығындарды, лимитті және қарызды есептеу',
+copied: 'Сілтеме көшірілді!',
+copyManual: 'Сілтемені көшіріңіз:',
 amount: 'Сома (теңге)',
 add: 'Қосу',
 date: 'Күні мен уақыты',
@@ -355,10 +430,28 @@ cats: { food:'Тағам', transport:'Көлік', fuel:'Жанармай', cafe
 loc: 'kk-KZ'
 },
 zh: {
-title: '支出, ₸',
+title: 'Расход Альпина',
 nHome: '首页', nFin: '财务', nDebts: '欠款', nProf: '我的',
 langTitle: '语言',
 infoRow: '🔒 隐私',
+soundRow: '🔊 声音',
+soundOn: '开',
+soundOff: '关',
+share: '📤 分享网站',
+aboutTitle: '关于应用',
+aboutRow: 'ℹ️ 关于应用',
+devLbl: '开发者',
+devName: 'Duisembayev Yernat',
+devAv: 'DY',
+rateTitle: '汇率',
+rSec: { cur: '货币', crypto: '加密货币', metal: '金属' },
+rUnit: '/克',
+rName: { usd: '美元', eur: '欧元', rub: '俄罗斯卢布', cny: '人民币', au: '黄金', ag: '白银', pt: '铂金', pd: '钯金' },
+about1: '这个应用最初是为自己做的，但有些人非常喜欢，所以我把它公开了。',
+about2: '本网站由 Claude 协助制作。',
+shareText: 'Расход Альпина — 支出、限额和欠款记账',
+copied: '链接已复制！',
+copyManual: '请复制链接：',
 amount: '金额（坚戈）',
 add: '添加',
 date: '日期和时间',
@@ -434,6 +527,32 @@ let lang = lsGet('lang');
 if (!has(T, lang)) lang = 'ru';
 let mem = null, dmem = null;
 let dmode = lsGet('dmode') === 'owe' ? 'owe' : 'owed';
+
+/* ---------- Sound ---------- */
+let soundOn = lsGet('sound') !== 'off';
+let actx = null;
+function beep(f1, f2, dur, vol) {
+  if (!soundOn) return;
+  try {
+    if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state === 'suspended') actx.resume();
+    const o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime;
+    o.type = 'sine';
+    o.frequency.setValueAtTime(f1, t);
+    o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(actx.destination);
+    o.start(t); o.stop(t + dur);
+  } catch (e) {}
+}
+const sndClick = () => beep(700, 450, 0.07, 0.15);
+const sndTab = () => beep(480, 880, 0.11, 0.18);
+document.addEventListener('click', ev => {
+  const b = ev.target.closest && ev.target.closest('button');
+  if (!b || b.id === 'brandBtn') return;
+  if (b.closest('#nav') || b.closest('#seg') || b.closest('#langs')) sndTab(); else sndClick();
+}, true);
 
 function norm(e) {
   if (!e || typeof e !== 'object') return null;
@@ -539,6 +658,7 @@ function setDebtLabels() {
 function setText() {
   const t = T[lang];
   document.documentElement.lang = lang;
+  document.title = 'Расход Альпина';
   $('title').textContent = t.title;
   $('brandBtn').innerHTML = LOGO + '<span>Alpin</span>';
   $('nHome').textContent = t.nHome;
@@ -547,6 +667,12 @@ function setText() {
   $('nProf').textContent = t.nProf;
   $('langTitle').textContent = t.langTitle;
   $('infoRow').textContent = t.infoRow;
+  $('soundRow').textContent = t.soundRow;
+  $('soundState').textContent = soundOn ? t.soundOn : t.soundOff;
+  $('shareBtn').textContent = t.share;
+  $('aboutTitle').textContent = t.aboutTitle;
+  $('about1').textContent = t.about1;
+  $('about2').textContent = t.about2;
   $('amount').placeholder = t.amount;
   $('add').textContent = t.add;
   $('thDate').textContent = t.date;
@@ -555,7 +681,10 @@ function setText() {
   $('archTitle').textContent = t.archive;
   $('exportBtn').textContent = t.exp;
   $('importBtn').textContent = t.imp;
-  $('author').textContent = t.author;
+  $('devLbl').textContent = t.devLbl;
+  $('devName').textContent = t.devName;
+  $('devAv').textContent = t.devAv;
+  $('aboutRow').textContent = t.aboutRow;
   $('infoTitle').textContent = t.infoTitle;
   $('infoText1').textContent = t.info1;
   $('infoText2').textContent = t.info2;
@@ -578,6 +707,54 @@ function setText() {
     sel.appendChild(o);
   });
   sel.value = cur;
+}
+
+const RATES = [
+  { s: 'cur', code: 'USD / KZT', n: 'usd', ic: '🇺🇸', v: 451.30, d: 2 },
+  { s: 'cur', code: 'EUR / KZT', n: 'eur', ic: '🇪🇺', v: 504.85, d: 2 },
+  { s: 'cur', code: 'RUB / KZT', n: 'rub', ic: '🇷🇺', v: 5.59, d: 2 },
+  { s: 'cur', code: 'CNY / KZT', n: 'cny', ic: '🇨🇳', v: 67.52, d: 2 },
+  { s: 'crypto', code: 'Bitcoin', sub: 'BTC', ic: '₿', bg: '#5b4bd6', fg: '#fff', v: 36479143.46, d: 2, ch: '+1,01%' },
+  { s: 'metal', n: 'au', ic: 'Au', bg: '#3a2a12', fg: '#e0a040', v: 58397, d: 0, u: 1 },
+  { s: 'metal', n: 'ag', ic: 'Ag', bg: '#2e3135', fg: '#b9bec4', v: 784, d: 0, u: 1 },
+  { s: 'metal', n: 'pt', ic: 'Pt', bg: '#12383c', fg: '#3cc4d0', v: 22065, d: 0, u: 1 },
+  { s: 'metal', n: 'pd', ic: 'Pd', bg: '#2a2250', fg: '#9a86ff', v: 15260, d: 0, u: 1 }
+];
+function fmtR(v, d) {
+  const p = v.toFixed(d).split('.');
+  p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0');
+  return p.join(',');
+}
+function renderRates() {
+  const t = T[lang], box = $('rates');
+  $('rateTitle').textContent = t.rateTitle;
+  box.innerHTML = '';
+  let last = '';
+  RATES.forEach(r => {
+    if (r.s !== last) {
+      last = r.s;
+      const h = document.createElement('div'); h.className = 'rt-sec'; h.textContent = t.rSec[r.s];
+      box.appendChild(h);
+    }
+    const row = document.createElement('div'); row.className = 'rt-row';
+    const ic = document.createElement('div'); ic.className = 'rt-ic';
+    if (r.s === 'cur') {
+      const fl = document.createElement('span'); fl.className = 'fl'; fl.textContent = r.ic;
+      fl.style.animationDelay = (RATES.indexOf(r) * -0.5) + 's';
+      ic.appendChild(fl);
+    } else ic.textContent = r.ic;
+    if (r.bg) { ic.style.background = r.bg; ic.style.color = r.fg; }
+    const mid = document.createElement('div'); mid.className = 'rt-mid';
+    const b = document.createElement('b'); b.textContent = r.code || t.rName[r.n];
+    mid.appendChild(b);
+    const sub = r.sub || (r.code ? t.rName[r.n] : '');
+    if (sub) { const sp = document.createElement('span'); sp.textContent = sub; mid.appendChild(sp); }
+    const v = document.createElement('div'); v.className = 'rt-v';
+    v.appendChild(document.createTextNode(fmtR(r.v, r.d) + ' ₸' + (r.u ? t.rUnit : '')));
+    if (r.ch) { const i = document.createElement('i'); i.textContent = r.ch; v.appendChild(i); }
+    row.appendChild(ic); row.appendChild(mid); row.appendChild(v);
+    box.appendChild(row);
+  });
 }
 
 function renderDebts() {
@@ -668,6 +845,7 @@ function render() {
   });
   renderLimit();
   renderDebts();
+  renderRates();
 }
 
 function addExpense(a) {
@@ -731,9 +909,37 @@ document.querySelectorAll('#nav button').forEach(b => {
   b.onclick = () => showTab(b.dataset.t);
 });
 
+$('aboutBtn').onclick = () => $('aboutModal').classList.add('open');
+$('aboutOk').onclick = () => $('aboutModal').classList.remove('open');
+$('aboutModal').onclick = e => { if (e.target === $('aboutModal')) $('aboutModal').classList.remove('open'); };
 $('infoBtn').onclick = () => $('infoModal').classList.add('open');
 $('infoOk').onclick = () => $('infoModal').classList.remove('open');
 $('infoModal').onclick = e => { if (e.target === $('infoModal')) $('infoModal').classList.remove('open'); };
+
+$('soundBtn').onclick = () => {
+  soundOn = !soundOn;
+  lsSet('sound', soundOn ? 'on' : 'off');
+  $('soundState').textContent = soundOn ? T[lang].soundOn : T[lang].soundOff;
+  if (soundOn) sndClick();
+};
+
+$('shareBtn').onclick = async () => {
+  const t = T[lang], url = location.href;
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: t.title, text: t.shareText, url: url });
+      return;
+    }
+  } catch (e) {
+    if (e && e.name === 'AbortError') return;
+  }
+  try {
+    await navigator.clipboard.writeText(url);
+    alert(t.copied);
+  } catch (e) {
+    prompt(t.copyManual, url);
+  }
+};
 
 $('exportBtn').onclick = () => {
   const data = { expenses: load(), debts: loadD(), limit: getLim() };
