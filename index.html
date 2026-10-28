@@ -1116,5 +1116,135 @@ try { render(); } catch (e) { showErr('render: ' + e.message); }
 showTab(lsGet('tab') || 'home');
 tick(); setInterval(tick, 1000);
 </script>
+<script>
+/* Напоминание в 19:00 + звук как в Kaspi. Подключается одной строкой перед </body> */
+(function () {
+  var SND = 'data:audio/mpeg;base64,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MhiAtSv9Cjrftd/6f16f/r0X3Ev+7tUQK+CSm0poy7HoP9Ii4B+krDFG+CxZAkYn49B2ZyvcUNxcu3+WvuMay5jmSKVxjt5C4V9JP4D/+1LExIOK/KkeLSS2QU6SI4G3mTAuwkUVh1o5qyCE36ff/+yn7tn/9YAnSW1wOolJAAwi6k5Zy2oFIGBrImpLEkTks0FeTgoSASiQCFEkkUfnaa9Y+cG8xsK1S4o0hwVe4J3p5GFIud66JMxLWI0/////pRASWKKaTcDMjMwZxFW0FYuWfLPw72D50iLKfiVdU1vRIMjir6yQG1HlMGDjekIvCE9a1KkPxbd78qFqZp0wvUBigyqoMJbE2ClFqa0TB2dRNY9o6wUFJVl6RtmUHf/7UsTMg4qAkxoMaSXBShQjjZYNOIUgZgzMGUlUBS1Ixk5KpN/qqv3RxScK+6JaywMTo0+sYqvt5OQrJQEkp7NF3isd3oYyuWSwnqdFVtfR8lZmMnUkMzyy8Hxz9qQgk3fklQBkAGOOAqqlqJjX2DCuGQZq1WM0NTY16tU1JqsO1f2bZVVVjMyrxvO05sLIotXfDtmfU+UTrI93mZnDqYiRRbXkiRpyMEqrZ/5pHJk2nnP97TldnNIkbBSKOVpqJ+akzMq7NVUozNQqyXXDoaAR//tSxNcACUSPJ0ewZ8EqkWJE8wl66QIhaPA7yYfYmgo9l/////////6KiKn//T/7GKGBlFG3NGRUFQWB0HQcEZIbMkwpIix1ScLWVOFl1J5uequG5KMkxZ8FhcVFRUVFv/rFOLCusUbULExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqr/+1LE6oAH7BMRQowggauwnySxjAGqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqv/7UsTzAw2RiOKhmH7BWaQRyLEmOKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq';
+  var HOUR = 19;
+  var S = {
+    ru: { row: '🔔 Напоминание в 19:00', on: 'Вкл', off: 'Выкл', cal: '📅 Добавить в календарь (надёжнее)',
+      title: 'Пора записать расходы', body: 'Запиши, сколько потратил сегодня.', ok: 'Хорошо',
+      deny: 'Уведомления запрещены в настройках телефона. Напоминание будет показываться внутри приложения.' },
+    kk: { row: '🔔 Сағат 19:00 еске салу', on: 'Қосулы', off: 'Өшірулі', cal: '📅 Күнтізбеге қосу (сенімдірек)',
+      title: 'Шығындарды жазатын уақыт', body: 'Бүгін қанша жұмсағаныңды жаз.', ok: 'Жақсы',
+      deny: 'Хабарландыру телефон баптауларында тыйым салынған. Еске салу қосымша ішінде көрсетіледі.' },
+    zh: { row: '🔔 19:00 提醒', on: '开', off: '关', cal: '📅 添加到日历（更可靠）',
+      title: '该记账了', body: '记下今天花了多少钱。', ok: '好的',
+      deny: '手机设置中已禁止通知，提醒将在应用内显示。' }
+  };
+  function tx() { return S[lang] || S.ru; }
+
+  var audio = new Audio(SND);
+  audio.preload = 'auto';
+  var unlocked = false;
+  document.addEventListener('pointerdown', function () {
+    if (unlocked) return;
+    unlocked = true;
+    try {
+      audio.muted = true;
+      var p = audio.play();
+      var done = function () { audio.pause(); audio.currentTime = 0; audio.muted = false; };
+      if (p && p.then) p.then(done).catch(function () { audio.muted = false; }); else done();
+    } catch (e) {}
+  }, { once: true, capture: true });
+
+  function playK() {
+    if (!soundOn) return;
+    try { audio.currentTime = 0; var p = audio.play(); if (p && p.catch) p.catch(function () {}); } catch (e) {}
+  }
+
+  /* --- UI в профиле --- */
+  var card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = '<button class="prow" id="remBtn"><span id="remRow"></span><span id="remState"></span></button>' +
+    '<button class="gray" id="remCal" style="width:100%;margin-top:10px"></button>';
+  var anchor = $('soundBtn').closest('.card');
+  anchor.parentNode.insertBefore(card, anchor.nextSibling);
+
+  /* --- окно напоминания --- */
+  var modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.innerHTML = '<div class="modalbox"><h3 id="remMT"></h3><p id="remMB"></p><button class="ok" id="remMOk"></button></div>';
+  document.body.appendChild(modal);
+  function closeM() { modal.classList.remove('open'); }
+  $('remMOk').onclick = closeM;
+  modal.onclick = function (e) { if (e.target === modal) closeM(); };
+
+  function isOn() { return lsGet('rem') === 'on'; }
+  function paint() {
+    var t = tx();
+    $('remRow').textContent = t.row;
+    $('remState').textContent = isOn() ? t.on : t.off;
+    $('remCal').textContent = t.cal;
+  }
+
+  function fire() {
+    var t = tx();
+    lsSet('rem_last', todayStr());
+    playK();
+    try {
+      if ('Notification' in window && Notification.permission === 'granted' && document.hidden) {
+        new Notification(t.title, { body: t.body });
+      }
+    } catch (e) {}
+    $('remMT').textContent = '🔔 ' + t.title;
+    $('remMB').textContent = t.body;
+    $('remMOk').textContent = t.ok;
+    modal.classList.add('open');
+  }
+
+  function check() {
+    if (!isOn()) return;
+    if (new Date().getHours() < HOUR) return;
+    if (lsGet('rem_last') === todayStr()) return;
+    fire();
+  }
+
+  $('remBtn').onclick = function () {
+    if (isOn()) { lsSet('rem', 'off'); paint(); return; }
+    lsSet('rem', 'on');
+    if (new Date().getHours() >= HOUR) lsSet('rem_last', todayStr());
+    paint();
+    playK();
+    try {
+      if ('Notification' in window && Notification.permission === 'default') {
+        var r = Notification.requestPermission();
+        if (r && r.then) r.then(function (p) { if (p === 'denied') alert(tx().deny); });
+      } else if ('Notification' in window && Notification.permission === 'denied') {
+        alert(tx().deny);
+      }
+    } catch (e) {}
+  };
+
+  /* --- календарь: ежедневное событие 19:00 со сигналом --- */
+  $('remCal').onclick = function () {
+    var t = tx(), d = new Date();
+    if (d.getHours() >= HOUR) d.setDate(d.getDate() + 1);
+    var p = function (n) { return ('0' + n).slice(-2); };
+    var st = d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + 'T' + p(HOUR) + '0000';
+    var n = new Date();
+    var stamp = n.getUTCFullYear() + p(n.getUTCMonth() + 1) + p(n.getUTCDate()) + 'T' + p(n.getUTCHours()) + p(n.getUTCMinutes()) + p(n.getUTCSeconds()) + 'Z';
+    var ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Rashod Alpin//RU', 'BEGIN:VEVENT',
+      'UID:rashod-alpin-daily-19@local', 'DTSTAMP:' + stamp, 'DTSTART:' + st, 'DURATION:PT15M',
+      'RRULE:FREQ=DAILY', 'SUMMARY:' + t.title, 'DESCRIPTION:' + t.body,
+      'BEGIN:VALARM', 'TRIGGER:PT0M', 'ACTION:DISPLAY', 'DESCRIPTION:' + t.title, 'END:VALARM',
+      'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
+    a.download = 'rashod-19.ics';
+    document.body.appendChild(a); a.click(); a.remove();
+  };
+
+  /* обновлять подписи при смене языка */
+  var _setText = setText;
+  setText = function () { _setText.apply(this, arguments); paint(); };
+
+  paint();
+  check();
+  setInterval(check, 20000);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) check(); });
+})();
+
+</script>
 </body>
 </html>
