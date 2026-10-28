@@ -115,6 +115,11 @@ button.wide {width: 100%;background: var(--greenbg);color: var(--green);border: 
 .dev-av {width: 54px;height: 54px;border-radius: 50%;background: var(--green);color: #08140c;display: flex;align-items: center;justify-content: center;font-size: 19px;font-weight: 800;flex: none;box-shadow: 0 0 0 4px rgba(104,209,138,.18);}
 .dev-t span {display: block;font-size: 12px;font-weight: 700;color: var(--mut);letter-spacing: 1px;text-transform: uppercase;margin-bottom: 4px;}
 .dev-t b {font-size: 20px;font-weight: 800;}
+#howModal .modalbox {max-height: 82vh;overflow-y: auto;}
+.step {display: flex;gap: 12px;margin: 14px 0;}
+.step .num {width: 28px;height: 28px;border-radius: 50%;background: var(--greenbg);color: var(--green);font-weight: 800;font-size: 14px;display: flex;align-items: center;justify-content: center;flex: none;}
+.step b {display: block;font-size: 15px;color: #fff;margin-bottom: 2px;}
+.step span {font-size: 14px;line-height: 1.45;color: rgba(255,255,255,.75);}
 .tab {display: none;}
 .tab.active {display: block;}
 .nav {position: fixed;left: 14px;right: 14px;bottom: calc(12px + env(safe-area-inset-bottom));background: rgba(28,28,30,.92);-webkit-backdrop-filter: blur(20px);backdrop-filter: blur(20px);border: 1px solid var(--line);border-radius: 32px;display: flex;padding: 6px;z-index: 50;}
@@ -222,6 +227,9 @@ button.wide {width: 100%;background: var(--greenbg);color: var(--green);border: 
 <button class="prow" id="aboutBtn"><span id="aboutRow"></span><span>›</span></button>
 </div>
 <div class="card">
+<button class="prow" id="howBtn"><span id="howRow"></span><span>›</span></button>
+</div>
+<div class="card">
 <button class="prow" id="soundBtn"><span id="soundRow"></span><span id="soundState"></span></button>
 </div>
 <div class="card">
@@ -258,6 +266,13 @@ button.wide {width: 100%;background: var(--greenbg);color: var(--green);border: 
 <button class="ok" id="infoOk">OK</button>
 </div>
 </div>
+<div class="modal" id="howModal">
+<div class="modalbox">
+<h3 id="howTitle"></h3>
+<div id="howBody"></div>
+<button class="ok" id="howOk">OK</button>
+</div>
+</div>
 <div class="modal" id="aboutModal">
 <div class="modalbox">
 <h3 id="aboutTitle"></h3>
@@ -286,6 +301,9 @@ soundOff: 'Выкл',
 share: '📤 Поделиться сайтом',
 aboutTitle: 'О Приложении',
 aboutRow: 'ℹ️ О приложении',
+howRow: '📖 Как пользоваться',
+howTitle: 'Как пользоваться',
+how: [["Главная", "Введите сумму, выберите категорию и нажмите «Добавить». Чтобы удалить трату, нажмите «Удалить» в её строке."], ["Лимит", "Впишите лимит на месяц и нажмите «Сохранить». Полоска покажет остаток, а когда денег станет мало, приложение предупредит."], ["Финансы", "Здесь траты за месяц и всего, архив по месяцам, а также курсы валют, криптовалюты и металлов."], ["Долги", "Выберите «Мне должны» или «Я должен», нажмите «+ Добавить долг» и укажите имя, сумму и даты. Кнопка «Вернул» или «Отдал» удаляет запись."], ["Профиль", "Язык, звук и кнопка «Поделиться сайтом». Чтобы перенести данные на другой телефон, сохраните копию и восстановите её из файла."], ["Совет", "iPhone (Safari): «Поделиться» → «На экран Домой». Android (Chrome): меню ⋮ → «Добавить на главный экран»."]],
 devLbl: 'Разработчик',
 devName: 'Дуйсембаев Ернат',
 devAv: 'ДЕ',
@@ -363,6 +381,9 @@ soundOff: 'Өшірулі',
 share: '📤 Сайтпен бөлісу',
 aboutTitle: 'Қосымша туралы',
 aboutRow: 'ℹ️ Қосымша туралы',
+howRow: '📖 Қалай қолдану',
+howTitle: 'Қалай қолдану',
+how: [["Басты", "Соманы енгізіп, санатты таңдаңыз да «Қосу» басыңыз. Жою үшін жолдағы «Жою» батырмасын басыңыз."], ["Лимит", "Айлық лимитті жазып, «Сақтау» басыңыз. Жолақ қалдықты көрсетеді, ақша аз қалса ескертеді."], ["Қаржы", "Айдағы және жалпы шығын, айлар архиві, валюта, крипто және металл бағамдары."], ["Қарыз", "«Маған қарыз» немесе «Мен қарызбын» таңдап, «+ Қарыз қосу» басыңыз да, аты, сомасы мен күндерін жазыңыз. «Қайтарды» жазбаны жояды."], ["Профиль", "Тіл, дыбыс және сайтпен бөлісу. Басқа телефонға көшіру үшін көшірмені сақтап, файлдан қалпына келтіріңіз."], ["Кеңес", "iPhone (Safari): «Бөлісу» → «Басты экранға қосу». Android (Chrome): ⋮ мәзірі → «Басты экранға қосу»."]],
 devLbl: 'Әзірлеуші',
 devName: 'Дуйсембаев Ернат',
 devAv: 'ДЕ',
@@ -440,6 +461,9 @@ soundOff: '关',
 share: '📤 分享网站',
 aboutTitle: '关于应用',
 aboutRow: 'ℹ️ 关于应用',
+howRow: '📖 使用说明',
+howTitle: '使用说明',
+how: [["首页", "输入金额，选择类别，点“添加”。要删除，点该行的“删除”。"], ["限额", "输入每月限额并点“保存”。进度条显示剩余额度，快用完时会提醒。"], ["财务", "查看本月和总支出、按月归档，以及汇率、加密货币和金属价格。"], ["欠款", "选择“别人欠我”或“我欠别人”，点“+ 添加欠款”，填写姓名、金额和日期。点“已还”会删除记录。"], ["我的", "可切换语言、开关声音、分享网站。换手机时先保存备份，再从文件恢复。"], ["提示", "iPhone（Safari）：分享 → “添加到主屏幕”。Android（Chrome）：菜单 ⋮ → “添加到主屏幕”。"]],
 devLbl: '开发者',
 devName: 'Duisembayev Yernat',
 devAv: 'DY',
@@ -685,6 +709,17 @@ function setText() {
   $('devName').textContent = t.devName;
   $('devAv').textContent = t.devAv;
   $('aboutRow').textContent = t.aboutRow;
+  $('howRow').textContent = t.howRow;
+  $('howTitle').textContent = t.howTitle;
+  const hb = $('howBody'); hb.innerHTML = '';
+  t.how.forEach((x, i) => {
+    const st = document.createElement('div'); st.className = 'step';
+    const n = document.createElement('div'); n.className = 'num'; n.textContent = i + 1;
+    const w = document.createElement('div');
+    const b = document.createElement('b'); b.textContent = x[0];
+    const sp = document.createElement('span'); sp.textContent = x[1];
+    w.appendChild(b); w.appendChild(sp); st.appendChild(n); st.appendChild(w); hb.appendChild(st);
+  });
   $('infoTitle').textContent = t.infoTitle;
   $('infoText1').textContent = t.info1;
   $('infoText2').textContent = t.info2;
@@ -909,6 +944,9 @@ document.querySelectorAll('#nav button').forEach(b => {
   b.onclick = () => showTab(b.dataset.t);
 });
 
+$('howBtn').onclick = () => $('howModal').classList.add('open');
+$('howOk').onclick = () => $('howModal').classList.remove('open');
+$('howModal').onclick = e => { if (e.target === $('howModal')) $('howModal').classList.remove('open'); };
 $('aboutBtn').onclick = () => $('aboutModal').classList.add('open');
 $('aboutOk').onclick = () => $('aboutModal').classList.remove('open');
 $('aboutModal').onclick = e => { if (e.target === $('aboutModal')) $('aboutModal').classList.remove('open'); };
